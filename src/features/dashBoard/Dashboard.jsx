@@ -1,6 +1,7 @@
 import Header from "./components/Header";
 import Sidebar from "./components/Sidebar";
 import MainBox from "./components/MainBox";
+import NewTaskField from "./components/NewTaskField";
 // grid grid-cols-[250px_1fr] min-h-[calc(100vh-60px)]
 import { useState } from "react";
 
@@ -13,6 +14,7 @@ function Dashboard() {
       <Header
         setSidebarToggle={setSidebarToggle}
         setNewTaskPageToggle={setNewTaskPageToggle}
+        newTaskPageToggle={newTaskPageToggle}
       />
 
       <main
@@ -32,10 +34,7 @@ function Dashboard() {
           )
         }
         {newTaskPageToggle ? (
-          <div className="mx-8 my-5 text-4xl bg-gray-100 text-gray-950 p-10 rounded-2xl font-bold">
-            {" "}
-            New Task Page Component
-          </div>
+          <NewTaskField setNewTaskPageToggle={setNewTaskPageToggle} />
         ) : (
           <MainBox />
         )}

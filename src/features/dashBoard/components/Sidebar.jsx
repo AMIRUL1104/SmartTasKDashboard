@@ -10,7 +10,7 @@ function Sidebar({ SidebarToggle, setNewTaskPageToggle }) {
   return (
     <div
       className={`
-     m-5
+     m-5 max-h-screen
     flex flex-col gap-6
     overflow-hidden
     rounded-2xl border-2 border-gray-300 bg-cyan-950 p-4

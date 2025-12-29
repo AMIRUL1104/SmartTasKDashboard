@@ -9,6 +9,24 @@ function Dashboard() {
   const [SidebarToggle, setSidebarToggle] = useState(true);
   const [newTaskPageToggle, setNewTaskPageToggle] = useState(false);
 
+  // all tasks or notes stored in this state
+  const [allTask, setAllTask] = useState([
+    { id: 0, title: "amirul islam", textarea: { 1: "this is first task" } },
+  ]);
+
+  const addTask = ({ title, cetagory, status, priority, textarea }) => {
+    let addNewTask = {
+      id: crypto.randomUUID(),
+      title,
+      cetagory,
+      status,
+      priority,
+      textarea,
+    };
+
+    setAllTask([...allTask, addNewTask]);
+  };
+
   return (
     <>
       <Header
@@ -34,9 +52,12 @@ function Dashboard() {
           )
         }
         {newTaskPageToggle ? (
-          <NewTaskField setNewTaskPageToggle={setNewTaskPageToggle} />
+          <NewTaskField
+            addTask={addTask}
+            setNewTaskPageToggle={setNewTaskPageToggle}
+          />
         ) : (
-          <MainBox />
+          <MainBox allTask={allTask} />
         )}
       </main>
     </>

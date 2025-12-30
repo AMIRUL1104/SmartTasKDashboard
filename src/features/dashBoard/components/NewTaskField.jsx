@@ -1,38 +1,61 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import TaskFieldPieces from "./reusable_component/TaskFIeldPieces.JSX";
 function NewTaskField({ addTask, setNewTaskPageToggle }) {
-  const [taskField, setTaskField] = useState([{ id: 1 }]);
-
-  const handleInput = () => {
-    const el = textareaRef.current;
-
-    // Reset height to recalculate correctly (shrink support)
-    el.style.height = "auto";
-
-    // Set height based on content
-    el.style.height = `${el.scrollHeight}px`;
-  };
-  const textareaRef = useRef(null);
-
+  //all useState Hooks
+  const [taskField, setTaskField] = useState([{ id: 2 }]); //using for rendering TaskFiedPieces OR dynamic textarea
+  const [focusId, setFocusId] = useState(null); // for textarea  focus control
   const [newTask, setNewTask] = useState({
     title: "",
     textarea: {}, // dynamic, many values
     category: "all",
     status: "Pending",
     priority: "Medium",
-  });
+  }); // new task val;ues catcher
 
+  // all useRef Hooks
+  const textareaRefs = useRef({}); //this hooks mostly used on dynamic textarea handling
+  const newTextareaIdRef = useRef(2); //last created textarea id stored in this ref
+  const newTaskTitleRefs = useRef({});
+
+  //textarea typing time actions are handle by this functin
+  const handleInput = (e) => {
+    const id = e.target.id;
+
+    if (id == 1) {
+      const a = newTaskTitleRefs.current;
+      a.style.height = "auto";
+
+      // Set height based on content
+      a.style.height = `${a.scrollHeight}px`;
+    }
+    const el = textareaRefs.current[id];
+    if (!el) return;
+    // Reset height to recalculate correctly (shrink support)
+    el.style.height = "auto";
+
+    // Set height based on content
+    el.style.height = `${el.scrollHeight}px`;
+  };
+
+  //this function handle  all keyboard keys action like Enter,Arrows,Backspace etc
   const handleKeyDown = (e) => {
     if (e.key === "Enter") {
       e.preventDefault();
-      const id = crypto.randomUUID();
+
+      const id = newTextareaIdRef.current + 1; // new textarea id
+      newTextareaIdRef.current = id; // latest textarea id store in ref
+
       setTaskField((prev) => [...prev, { id: id }]);
+      setFocusId(id);
     }
     if (e.key === "ArrowDown") {
       e.preventDefault();
+      const textareaId = e.target.id; // যে textarea তে enter চাপা  হয়েছে
+      console.log(`ArrowDown ID is = ${textareaId}`);
     }
   };
 
+  //Task title ,cetagories ,status , priority etc. properties value catching function
   const handleChange = (e) => {
     const key = e.target.name;
     const value = e.target.value;
@@ -41,6 +64,8 @@ function NewTaskField({ addTask, setNewTaskPageToggle }) {
       [key]: value,
     });
   };
+
+  //dynamically create all text area Value Catching Function
   const handleTextarea = (e) => {
     const { name, value } = e.target;
 
@@ -53,13 +78,20 @@ function NewTaskField({ addTask, setNewTaskPageToggle }) {
     }));
   };
 
+  //new task submit function
   const handleSubmit = (e) => {
     e.preventDefault();
     addTask(newTask);
     setNewTaskPageToggle((previus) => !previus);
   };
 
-  // console.log(newTask);
+  useEffect(() => {});
+
+  useEffect(() => {
+    if (focusId && textareaRefs.current[focusId]) {
+      textareaRefs.current[focusId].focus();
+    }
+  }, [taskField, focusId]);
 
   return (
     <form
@@ -68,16 +100,16 @@ function NewTaskField({ addTask, setNewTaskPageToggle }) {
       className=" relative mx-8 my-5 text-base bg-gray-100 text-gray-950 p-10 rounded-2xl min-h-3/4 "
     >
       <textarea
+        id={1}
+        ref={newTaskTitleRefs}
         name="title"
         value={newTask.title}
         onChange={handleChange}
-        ref={textareaRef}
         rows={1}
         type="text"
         onInput={handleInput}
         placeholder="New Page"
         className="
-      
           w-full
           text-4xl
           leading-relaxed
@@ -94,9 +126,14 @@ function NewTaskField({ addTask, setNewTaskPageToggle }) {
         <TaskFieldPieces
           handleTextarea={handleTextarea}
           handleKeyDown={handleKeyDown}
+          // onInput={handleInput}
           value={newTask.textarea[field.id] || ""}
           key={field.id}
           id={field.id}
+          handleInput={handleInput}
+          ref={(el) => {
+            if (el) textareaRefs.current[field.id] = el;
+          }}
         />
       ))}
 

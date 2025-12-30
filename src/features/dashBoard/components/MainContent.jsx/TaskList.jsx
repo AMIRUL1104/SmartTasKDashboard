@@ -10,7 +10,7 @@ function TaskList({ allTask }) {
             <h3 className=" text-2xl font-medium">{task.title}</h3>
             <p className="my-2">
               {(() => {
-                const text = task.textarea[1] || "";
+                const text = task.textarea[2] || "";
                 const words = text.split(" ");
 
                 return words.length > 30

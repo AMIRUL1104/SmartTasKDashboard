@@ -11,7 +11,7 @@ function Dashboard() {
 
   // all tasks or notes stored in this state
   const [allTask, setAllTask] = useState([
-    { id: 0, title: "amirul islam", textarea: { 1: "this is first task" } },
+    { id: 0, title: "amirul islam", textarea: { 2: "this is first task" } },
   ]);
 
   const addTask = ({ title, cetagory, status, priority, textarea }) => {

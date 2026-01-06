@@ -13,6 +13,7 @@ const TaskFieldPieces = forwardRef(
 
     const handleClick = () => {
       setBg(true);
+      // console.log(e.target.id);
     };
 
     useEffect(() => {
@@ -26,7 +27,7 @@ const TaskFieldPieces = forwardRef(
       <div
         onMouseOver={() => setTextEditBtn((prev) => !prev)}
         onMouseOut={() => setTextEditBtn((prev) => !prev)}
-        onClick={() => setPlaceHolder(true)}
+        onFocus={() => setPlaceHolder(true)}
         onBlur={() => setPlaceHolder((pre) => !pre)}
         className=" flex items-center gap-0 my-0.5 w-full  "
       >
@@ -47,6 +48,7 @@ const TaskFieldPieces = forwardRef(
           type="text"
           name={id}
           id={id}
+          onClick={handleClick}
           onInput={handleInput}
           placeholder={isPlaceholder ? "Write here..." : ""}
           onKeyDown={handleKeyDown}

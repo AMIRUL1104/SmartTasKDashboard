@@ -29,7 +29,7 @@ const TaskFieldPieces = forwardRef(
         onMouseOut={() => setTextEditBtn((prev) => !prev)}
         onFocus={() => setPlaceHolder(true)}
         onBlur={() => setPlaceHolder((pre) => !pre)}
-        className=" flex items-center gap-0 my-0.5 w-full  "
+        className=" flex items-center gap-0 my-2 w-full "
       >
         <button
           type="submit"
@@ -62,7 +62,7 @@ const TaskFieldPieces = forwardRef(
           resize-none
           overflow-hidden
            p-2 pl-0 rounded-lg ${textEditBtn ? " ml-0" : "ml-7"} ${
-            isNeedBg ? " bg-sky-100" : "bg-transparent"
+            isNeedBg ? " bg-sky-300" : "bg-transparent"
           } `}
         />
       </div>

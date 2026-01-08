@@ -6,8 +6,8 @@ import NewTaskField from "./components/NewTaskField";
 import { useState } from "react";
 
 function Dashboard() {
-  const [SidebarToggle, setSidebarToggle] = useState(true);
-  const [newTaskPageToggle, setNewTaskPageToggle] = useState(false);
+  const [SidebarToggle, setSidebarToggle] = useState(false);
+  const [newTaskPageToggle, setNewTaskPageToggle] = useState(true);
 
   // all tasks or notes stored in this state
   const [allTask, setAllTask] = useState([

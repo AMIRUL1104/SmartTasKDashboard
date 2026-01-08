@@ -10,13 +10,16 @@ function NewTaskField({ addTask, setNewTaskPageToggle }) {
     category: "all",
     status: "Pending",
     priority: "Medium",
-  }); // new task val;ues catcher
+  }); // new task values catcher
 
   console.log(newTask.textarea);
 
   // all useRef Hooks
   const textareaRefs = useRef({}); //this hooks mostly used on dynamic textarea handling
   const newTextareaIdRef = useRef("2"); //last created textarea id stored in this ref
+
+  const keydownedTextareaIdRef = useRef(null); //last created textarea id stored in this ref
+
   const newTaskTitleRefs = useRef({});
 
   //textarea typing time actions are handle by this functin
@@ -48,30 +51,35 @@ function NewTaskField({ addTask, setNewTaskPageToggle }) {
     const keydownedTextarea = e.target;
     const keydownedTextareaValue = e.target.value;
     const cursorPositionStart = keydownedTextarea.selectionStart;
-    const slicedKeydownedTextareaCursorBehindValue =
-      keydownedTextareaValue.slice(cursorPositionStart);
-    const slicedKeydownedTextareaCursorInfrontValue =
-      keydownedTextareaValue.slice(0, cursorPositionStart);
 
-    setNewTask((prev) => ({
-      ...prev,
-      textarea: prev.textarea.map((t) =>
-        t.id === keydownedId
-          ? { ...t, value: slicedKeydownedTextareaCursorInfrontValue }
-          : t
-      ),
-    }));
-
-    if (e.key === "Enter" && e.target.id == 1) {
+    if (e.key === "Enter" && e.target.name === "title") {
       e.preventDefault();
-      setFocusId(2);
-      newTextareaIdRef.current[2];
-    }
-    if (e.key === "Enter" && e.target.id != 1) {
+      textareaRefs.current["2"].focus();
+      newTextareaIdRef.current["2"];
+    } else if (e.key === "Enter" && e.target.name !== "title") {
       e.preventDefault();
 
       newTextareaIdRef.current = id; // latest textarea id store in ref
+      keydownedTextareaIdRef.current = keydownedId;
 
+      // keydowned Textarea value
+      const slicedKeydownedTextareaCursorInfrontValue =
+        keydownedTextareaValue.slice(0, cursorPositionStart);
+      // new Textarea  value
+      const slicedKeydownedTextareaCursorBehindValue =
+        keydownedTextareaValue.slice(cursorPositionStart);
+
+      // keydownedId Textarea value setting
+      setNewTask((prev) => ({
+        ...prev,
+        textarea: prev.textarea.map((t) =>
+          t.id === keydownedId
+            ? { ...t, value: slicedKeydownedTextareaCursorInfrontValue }
+            : t
+        ),
+      }));
+
+      // new Textarea id and value set on newtask textarea array
       setNewTask((prev) => {
         const newTextarea = {
           id: id,
@@ -92,15 +100,83 @@ function NewTaskField({ addTask, setNewTaskPageToggle }) {
       setTaskField((prev) => [...prev, { id: id }]);
 
       setFocusId(id);
-    }
-
-    if (e.key === "ArrowDown") {
+      // console.log(focusId);
+    } else if (e.key === "ArrowDown") {
       e.preventDefault();
-      // const id = e.target.id++; // যে textarea তে enter চাপা  হয়েছে
-      // console.log(`ArrowDown ID is = ${id}`);
+      // console.log(keydownedId);
 
-      // setFocusId(id);
-      // newTextareaIdRef.current[id];
+      if (e.target.name === "title") return textareaRefs.current["2"].focus();
+
+      const nextTextareaIndex = keydownedTextAreaIndex + 1;
+
+      const nextTextarea = newTask.textarea.find(
+        (value, index) => index === nextTextareaIndex
+      );
+      if (!nextTextarea) return;
+      setFocusId(nextTextarea.id);
+    } else if (e.key === "ArrowUp") {
+      e.preventDefault();
+
+      const nextTextareaIndex = keydownedTextAreaIndex - 1;
+
+      const nextTextarea = newTask.textarea.find(
+        (value, index) => index === nextTextareaIndex
+      );
+
+      if (!nextTextarea) return newTaskTitleRefs.current.focus();
+      setFocusId(nextTextarea.id);
+    } else if (e.key === "Backspace") {
+      const zeroToPositionStart = keydownedTextareaValue.slice(
+        0,
+        cursorPositionStart
+      );
+
+      // console.log(zeroToPositionStart.length);
+
+      if (zeroToPositionStart.length === 0) {
+        const nextTextareaIndex = keydownedTextAreaIndex - 1;
+        const nextTextarea = newTask.textarea.find(
+          (value, index) => index === nextTextareaIndex
+        );
+        const id = nextTextarea.id;
+        const value = e.target.value;
+
+        setNewTask((prev) => ({
+          ...prev,
+          textarea: prev.textarea.map((t) =>
+            t.id === id ? { ...t, value: value } : t
+          ),
+        }));
+        let updated = [...newTask.textarea];
+        updated = newTask.textarea.filter((item) => item.id !== keydownedId);
+        setNewTask((prev) => {
+          return {
+            ...prev,
+            textarea: updated,
+          };
+        });
+
+        if (!nextTextarea) return newTaskTitleRefs.current.focus();
+        setFocusId(nextTextarea.id);
+      }
+      if (keydownedTextareaValue.length === 0) {
+        let updated = [...newTask.textarea];
+        updated = newTask.textarea.filter((item) => item.id !== keydownedId);
+        setNewTask((prev) => {
+          return {
+            ...prev,
+            textarea: updated,
+          };
+        });
+
+        const nextTextareaIndex = keydownedTextAreaIndex - 1;
+        const nextTextarea = newTask.textarea.find(
+          (value, index) => index === nextTextareaIndex
+        );
+
+        if (!nextTextarea) return newTaskTitleRefs.current.focus();
+        setFocusId(nextTextarea.id);
+      }
     }
   };
 
@@ -129,7 +205,9 @@ function NewTaskField({ addTask, setNewTaskPageToggle }) {
     const value = e.target.value;
     setNewTask((prev) => ({
       ...prev,
-      textarea: prev.textarea.map((t) => (t.id === id ? { ...t, value } : t)),
+      textarea: prev.textarea.map((t) =>
+        t.id === id ? { ...t, value: value } : t
+      ),
     }));
   };
 
@@ -150,6 +228,30 @@ function NewTaskField({ addTask, setNewTaskPageToggle }) {
     }
   }, [taskField, focusId]);
 
+  useEffect(() => {
+    let id = newTextareaIdRef.current;
+    if (!id) return;
+    const el = textareaRefs.current[id];
+    // console.log(el);
+    if (!el) return;
+    // Reset height to recalculate correctly (shrink support)
+    el.style.height = "auto";
+    // Set height based on content
+    el.style.height = `${el.scrollHeight}px`;
+  }, [newTask.textarea]);
+
+  useEffect(() => {
+    let id = keydownedTextareaIdRef.current;
+    if (!id) return;
+    const el = textareaRefs.current[id];
+    // console.log(el);
+    if (!el) return;
+    // Reset height to recalculate correctly (shrink support)
+    el.style.height = "auto";
+    // Set height based on content
+    el.style.height = `${el.scrollHeight}px`;
+  }, [newTask.textarea]);
+
   return (
     <form
       name="newTaskForm"
@@ -157,7 +259,7 @@ function NewTaskField({ addTask, setNewTaskPageToggle }) {
       className=" relative mx-8 my-5 text-base bg-gray-100 text-gray-950 p-10 rounded-2xl min-h-3/4 "
     >
       <textarea
-        id={1}
+        id={"1"}
         ref={newTaskTitleRefs}
         name="title"
         value={newTask.title}
@@ -180,24 +282,6 @@ function NewTaskField({ addTask, setNewTaskPageToggle }) {
         "
       />
 
-      {/* {taskField.map((field) => (
-        <TaskFieldPieces
-          handleTextarea={handleTextarea}
-          handleKeyDown={handleKeyDown}
-          // onInput={handleInput}
-          value={
-            newTask.textarea.map((item) => {
-              if (item.id === field.id) return;
-            }) || ""
-          }
-          key={field.id}
-          id={field.id}
-          handleInput={handleInput}
-          ref={(el) => {
-            if (el) textareaRefs.current[field.id] = el;
-          }}
-        />
-      ))} */}
       {newTask.textarea.map((field) => (
         <TaskFieldPieces
           handleTextarea={handleTextarea}

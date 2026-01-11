@@ -2,16 +2,23 @@ import Header from "./components/Header";
 import Sidebar from "./components/Sidebar";
 import MainBox from "./components/MainBox";
 import NewTaskField from "./components/NewTaskField";
+import TaskDetails from "./components/TaskDetails";
 // grid grid-cols-[250px_1fr] min-h-[calc(100vh-60px)]
 import { useState } from "react";
 
 function Dashboard() {
-  const [SidebarToggle, setSidebarToggle] = useState(false);
-  const [newTaskPageToggle, setNewTaskPageToggle] = useState(true);
-
+  const [SidebarToggle, setSidebarToggle] = useState(true);
+  const [mainSectionToggle, setMainSectionToggle] = useState("mainbox");
+  const [currentTaskDetails, setCurrentTaskDetails] = useState(null);
   // all tasks or notes stored in this state
   const [allTask, setAllTask] = useState([
-    { id: 0, title: "amirul islam", textarea: { 2: "this is first task" } },
+    {
+      id: "0",
+      title: " SmartTask CRM Dashboard ",
+      textarea: [
+        { id: "2", value: "See how to use smartTas CRM Dashboard effectivly " },
+      ],
+    },
   ]);
 
   const addTask = ({ title, cetagory, status, priority, textarea }) => {
@@ -27,12 +34,46 @@ function Dashboard() {
     setAllTask([...allTask, addNewTask]);
   };
 
+  // handleTaskShowing function
+  const handleTaskShowing = (e) => {
+    const id = e.target.id;
+    allTask.filter((item) => {
+      if (item.id === id) {
+        setCurrentTaskDetails(item);
+        console.log(item);
+      }
+    });
+
+    // setCurrentTaskDetails(clickedTask);
+
+    setMainSectionToggle("taskDetails");
+  };
+
+  // console.log(currentTaskDetails);
+
+  // main section conditional rendering
+  let content;
+  if (mainSectionToggle === "newTaskPage") {
+    content = (
+      <NewTaskField
+        addTask={addTask}
+        setNewTaskPageToggle={setMainSectionToggle}
+      />
+    );
+  } else if (mainSectionToggle === "taskDetails") {
+    content = <TaskDetails currentTaskDetails={currentTaskDetails} />;
+  } else {
+    content = (
+      <MainBox allTask={allTask} handleTaskShowing={handleTaskShowing} />
+    );
+  }
+
   return (
     <>
       <Header
         setSidebarToggle={setSidebarToggle}
-        setNewTaskPageToggle={setNewTaskPageToggle}
-        newTaskPageToggle={newTaskPageToggle}
+        setNewTaskPageToggle={setMainSectionToggle}
+        newTaskPageToggle={mainSectionToggle}
       />
 
       <main
@@ -47,21 +88,25 @@ function Dashboard() {
           SidebarToggle && (
             <Sidebar
               SidebarToggle={SidebarToggle}
-              setNewTaskPageToggle={setNewTaskPageToggle}
+              setNewTaskPageToggle={setMainSectionToggle}
+              allTask={allTask}
+              handleTaskShowing={handleTaskShowing}
             />
           )
         }
-        {newTaskPageToggle ? (
-          <NewTaskField
-            addTask={addTask}
-            setNewTaskPageToggle={setNewTaskPageToggle}
-          />
-        ) : (
-          <MainBox allTask={allTask} />
-        )}
+        {content}
       </main>
     </>
   );
 }
 
 export default Dashboard;
+
+/* {newTaskPageToggle ? (
+          <NewTaskField
+            addTask={addTask}
+            setNewTaskPageToggle={setNewTaskPageToggle}
+          />
+        ) : (
+          <MainBox allTask={allTask} handleTaskShowing={handleTaskShowing} />
+        )} */

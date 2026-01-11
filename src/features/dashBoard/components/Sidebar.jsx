@@ -5,8 +5,7 @@ import SearchField from "./reusable_component/SearchField";
 import { fas } from "@fortawesome/free-solid-svg-icons";
 library.add(fas);
 
-import AddPageBtn from "./reusable_component/AddPageBtn";
-function Sidebar({ SidebarToggle, setNewTaskPageToggle }) {
+function Sidebar({ SidebarToggle, allTask, handleTaskShowing }) {
   return (
     <div
       className={`
@@ -27,15 +26,45 @@ function Sidebar({ SidebarToggle, setNewTaskPageToggle }) {
         <FontAwesomeIcon icon={["fas", "user"]} />
       </button>
 
-      <AddPageBtn setNewTaskPageToggle={setNewTaskPageToggle} />
+      {/* <AddPageBtn setNewTaskPageToggle={setNewTaskPageToggle} /> */}
 
       <div className=" p-1.5 rounded-2xl w-full px-2.5  capitalize text-sm text-black">
         <h3 className=" font-bold text-white  text-2xl">Pages</h3>
-        <ul>
-          <li className=" bg-gray-300 rounded-2xl my-2.5 px-2">one</li>
-          <li className=" bg-gray-300 rounded-2xl my-2.5 px-2">two</li>
-          <li className=" bg-gray-300 rounded-2xl my-2.5 px-2">three</li>
-        </ul>
+        <div className=" overflow-auto">
+          {
+            allTask.map((task) => {
+              let title = task.title;
+
+              if (title.length > 17) {
+                const cutTitle = title.slice(0, 18) + "...";
+                return (
+                  <button
+                    key={task.id}
+                    id={task.id}
+                    onClick={handleTaskShowing}
+                    className=" bg-gray-300 w-full rounded-2xl my-2.5 px-2 py-1 text-left  "
+                  >
+                    {cutTitle}
+                  </button>
+                );
+              } else {
+                return (
+                  <button
+                    key={task.id}
+                    id={task.id}
+                    onClick={handleTaskShowing}
+                    className="  bg-gray-300 w-full rounded-2xl my-2.5 px-2 py-1 text-left "
+                  >
+                    {title}{" "}
+                  </button>
+                );
+              }
+            })
+
+            /* <li className=" bg-gray-300 rounded-2xl my-2.5 px-2">one</li>
+          <li className=" bg-gray-300 rounded-2xl my-2.5 px-2">three</li> */
+          }
+        </div>
       </div>
     </div>
   );

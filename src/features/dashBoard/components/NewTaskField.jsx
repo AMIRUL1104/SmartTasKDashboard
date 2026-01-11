@@ -8,11 +8,11 @@ function NewTaskField({ addTask, setNewTaskPageToggle }) {
     title: "",
     textarea: [{ id: "2", value: "" }], // dynamic, many values
     category: "all",
-    status: "Pending",
-    priority: "Medium",
+    status: "pending",
+    priority: "all",
   }); // new task values catcher
 
-  console.log(newTask.textarea);
+  // console.log(newTask.textarea);
 
   // all useRef Hooks
   const textareaRefs = useRef({}); //this hooks mostly used on dynamic textarea handling
@@ -126,39 +126,10 @@ function NewTaskField({ addTask, setNewTaskPageToggle }) {
       if (!nextTextarea) return newTaskTitleRefs.current.focus();
       setFocusId(nextTextarea.id);
     } else if (e.key === "Backspace") {
-      const zeroToPositionStart = keydownedTextareaValue.slice(
-        0,
-        cursorPositionStart
-      );
-
-      // console.log(zeroToPositionStart.length);
-
-      if (zeroToPositionStart.length === 0) {
-        const nextTextareaIndex = keydownedTextAreaIndex - 1;
-        const nextTextarea = newTask.textarea.find(
-          (value, index) => index === nextTextareaIndex
-        );
-        const id = nextTextarea.id;
-        const value = e.target.value;
-
-        setNewTask((prev) => ({
-          ...prev,
-          textarea: prev.textarea.map((t) =>
-            t.id === id ? { ...t, value: value } : t
-          ),
-        }));
-        let updated = [...newTask.textarea];
-        updated = newTask.textarea.filter((item) => item.id !== keydownedId);
-        setNewTask((prev) => {
-          return {
-            ...prev,
-            textarea: updated,
-          };
-        });
-
-        if (!nextTextarea) return newTaskTitleRefs.current.focus();
-        setFocusId(nextTextarea.id);
-      }
+      // const zeroToPositionStart = keydownedTextareaValue.slice(
+      //   0,
+      //   cursorPositionStart
+      // );
       if (keydownedTextareaValue.length === 0) {
         let updated = [...newTask.textarea];
         updated = newTask.textarea.filter((item) => item.id !== keydownedId);
@@ -177,6 +148,37 @@ function NewTaskField({ addTask, setNewTaskPageToggle }) {
         if (!nextTextarea) return newTaskTitleRefs.current.focus();
         setFocusId(nextTextarea.id);
       }
+      // if (zeroToPositionStart.length === 0) {
+      //   const nextTextareaIndex = keydownedTextAreaIndex - 1;
+
+      //   const nextTextarea = newTask.textarea.find(
+      //     (value, index) => index === nextTextareaIndex
+      //   );
+
+      //   const id = nextTextarea.id;
+      //   console.log(id);
+      //   const value = e.target.value;
+
+      //   setNewTask((prev) => ({
+      //     ...prev,
+      //     textarea: prev.textarea.map((t) =>
+      //       t.id === id ? { ...t, value: t.value + value } : t
+      //     ),
+      //   }));
+      //   console.log(value);
+
+      //   let updated = [...newTask.textarea];
+      //   updated = newTask.textarea.filter((item) => item.id !== keydownedId);
+      //   setNewTask((prev) => {
+      //     return {
+      //       ...prev,
+      //       textarea: updated,
+      //     };
+      //   });
+
+      //   if (!nextTextarea) return newTaskTitleRefs.current.focus();
+      //   setFocusId(nextTextarea.id);
+      // }
     }
   };
 
@@ -339,6 +341,9 @@ function NewTaskField({ addTask, setNewTaskPageToggle }) {
           onChange={handleChange}
           className="rounded-lg bg-slate-700 px-4 py-2 text-sm text-white outline-none ring-1 ring-slate-600 focus:ring-2 focus:ring-red-500"
         >
+          <option value="all" className=" mt-2.5">
+            Status
+          </option>
           <option value={"high"}>High</option>
           <option value={"medium"}>Medium</option>
           <option value={"low"}>Low</option>

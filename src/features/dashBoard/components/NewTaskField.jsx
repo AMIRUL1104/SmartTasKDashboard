@@ -7,7 +7,7 @@ function NewTaskField({ addTask, setNewTaskPageToggle }) {
   const [newTask, setNewTask] = useState({
     title: "",
     textarea: [{ id: "2", value: "" }], // dynamic, many values
-    category: "all",
+    category: "",
     status: "pending",
     priority: "all",
   }); // new task values catcher
@@ -24,6 +24,7 @@ function NewTaskField({ addTask, setNewTaskPageToggle }) {
 
   //textarea typing time actions are handle by this functin
   const handleInput = (e) => {
+    e.target.setCustomValidity("");
     const id = e.target.id;
 
     if (id == 1) {
@@ -270,6 +271,8 @@ function NewTaskField({ addTask, setNewTaskPageToggle }) {
         rows={1}
         type="text"
         onInput={handleInput}
+        required
+        onInvalid={(e) => e.target.setCustomValidity("Fill Out Task Title")}
         placeholder="New Page"
         className="
           w-full
@@ -310,9 +313,10 @@ function NewTaskField({ addTask, setNewTaskPageToggle }) {
           name="category"
           value={newTask.category}
           onChange={handleChange}
+          required
           className="rounded-lg bg-slate-700 px-4 py-2 text-sm font-medium text-white hover:bg-slate-600"
         >
-          <option value="all" className=" mt-2.5">
+          <option value="" className=" mt-2.5">
             Categories
           </option>
           <option value="work">Work</option>

@@ -14,18 +14,24 @@ function Dashboard() {
   const [allTask, setAllTask] = useState([
     {
       id: "0",
-      title: " SmartTask CRM Dashboard ",
+      taskTitle: " SmartTask CRM Dashboard ",
+      priority: "all",
+      status: "pending",
+      category: "all",
       textarea: [
         { id: "2", value: "See how to use smartTas CRM Dashboard effectivly " },
       ],
     },
   ]);
 
-  const addTask = ({ title, cetagory, status, priority, textarea }) => {
+  const addTask = ({ title, category, status, priority, textarea }) => {
+    let taskTitle = title.trim().length > 0 ? title : "untitled document";
+    console.log(taskTitle);
+
     let addNewTask = {
       id: crypto.randomUUID(),
-      title,
-      cetagory,
+      taskTitle,
+      category,
       status,
       priority,
       textarea,
@@ -37,19 +43,17 @@ function Dashboard() {
   // handleTaskShowing function
   const handleTaskShowing = (e) => {
     const id = e.target.id;
-    allTask.filter((item) => {
-      if (item.id === id) {
-        setCurrentTaskDetails(item);
-        console.log(item);
-      }
-    });
+    // allTask.filter((item) => {
+    //   if (item.id === id) {
+    //     setCurrentTaskDetails(item);
+    //     console.log(item);
+    //   }
+    // });
 
     // setCurrentTaskDetails(clickedTask);
-
+    setCurrentTaskDetails(id);
     setMainSectionToggle("taskDetails");
   };
-
-  // console.log(currentTaskDetails);
 
   // main section conditional rendering
   let content;
@@ -61,7 +65,13 @@ function Dashboard() {
       />
     );
   } else if (mainSectionToggle === "taskDetails") {
-    content = <TaskDetails currentTaskDetails={currentTaskDetails} />;
+    content = (
+      <TaskDetails
+        allTask={allTask}
+        setAllTask={setAllTask}
+        currentTaskDetails={currentTaskDetails}
+      />
+    );
   } else {
     content = (
       <MainBox allTask={allTask} handleTaskShowing={handleTaskShowing} />
@@ -101,12 +111,3 @@ function Dashboard() {
 }
 
 export default Dashboard;
-
-/* {newTaskPageToggle ? (
-          <NewTaskField
-            addTask={addTask}
-            setNewTaskPageToggle={setNewTaskPageToggle}
-          />
-        ) : (
-          <MainBox allTask={allTask} handleTaskShowing={handleTaskShowing} />
-        )} */

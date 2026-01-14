@@ -33,7 +33,7 @@ function Sidebar({ SidebarToggle, allTask, handleTaskShowing }) {
         <div className=" overflow-auto">
           {
             allTask.map((task) => {
-              let title = task.title;
+              let title = task.taskTitle;
 
               if (title.length > 17) {
                 const cutTitle = title.slice(0, 18) + "...";

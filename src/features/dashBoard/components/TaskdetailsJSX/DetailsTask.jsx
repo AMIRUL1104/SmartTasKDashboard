@@ -4,8 +4,6 @@ function DetailsTask({ tasks }) {
   return (
     <div>
       {tasks.map((e) => {
-        console.log(e.value);
-
         return (
           <p
             key={e.id}

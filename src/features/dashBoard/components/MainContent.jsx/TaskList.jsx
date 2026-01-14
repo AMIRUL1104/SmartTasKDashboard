@@ -14,7 +14,7 @@ function TaskList({ allTask, handleTaskShowing }) {
               onClick={handleTaskShowing}
               className=" text-2xl font-medium"
             >
-              {task.title}
+              {task.taskTitle}
             </h3>
             <p id={task.id} onClick={handleTaskShowing} className="my-2">
               {task.textarea.map((e) => {

@@ -3,27 +3,21 @@ import Sidebar from "./components/Sidebar";
 import MainBox from "./components/MainBox";
 import NewTaskField from "./components/NewTaskField";
 import TaskDetails from "./components/TaskDetails";
-// grid grid-cols-[250px_1fr] min-h-[calc(100vh-60px)]
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 function Dashboard() {
   const [SidebarToggle, setSidebarToggle] = useState(true);
   const [mainSectionToggle, setMainSectionToggle] = useState("mainbox");
   const [currentTaskDetails, setCurrentTaskDetails] = useState(null);
   // all tasks or notes stored in this state
-  const [allTask, setAllTask] = useState([
-    {
-      id: "0",
-      taskTitle: " SmartTask CRM Dashboard ",
-      priority: "all",
-      status: "pending",
-      category: "all",
-      textarea: [
-        { id: "2", value: "See how to use smartTas CRM Dashboard effectivly " },
-      ],
-    },
-  ]);
+  const [allTask, setAllTask] = useState(() => {
+    let userTasks = localStorage.getItem("userTasks");
+    return userTasks ? JSON.parse(userTasks) : [];
+  });
 
+  useEffect(() => {
+    localStorage.setItem("userTasks", JSON.stringify(allTask));
+  }, [allTask]);
   const addTask = ({ title, category, status, priority, textarea }) => {
     let taskTitle = title.trim().length > 0 ? title : "untitled document";
     console.log(taskTitle);

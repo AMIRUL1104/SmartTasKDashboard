@@ -47,7 +47,8 @@ function TaskDetails({ currentTaskDetails, setAllTask, allTask }) {
         <div className=" relative ">
           <button
             type="button"
-            onClick={handleStatusDropdown}
+            onMouseOver={handleStatusDropdown}
+            // onMouseOut={() => setStatus((p) => !p)}
             className="rounded-lg capitalize bg-slate-700  px-4 py-2 text-sm font-medium text-white hover:bg-slate-600 "
           >
             {activeTask.status}
@@ -58,6 +59,7 @@ function TaskDetails({ currentTaskDetails, setAllTask, allTask }) {
           </button>
 
           <div
+            onClick={() => setStatus((p) => !p)}
             className={`${
               status
                 ? "flex items-center justify-evenly flex-col gap-3 absolute"
@@ -68,7 +70,7 @@ function TaskDetails({ currentTaskDetails, setAllTask, allTask }) {
               type="button"
               value={"pending"}
               onClick={changeStatus}
-              className=" hover:border-b-2 border-b-white"
+              className=" hover:border-b border-b-white"
             >
               Pending
             </button>
@@ -76,7 +78,7 @@ function TaskDetails({ currentTaskDetails, setAllTask, allTask }) {
               type="button"
               value={"in-progress"}
               onClick={changeStatus}
-              className=" hover:border-b-2 border-b-white"
+              className=" hover:border-b border-b-white"
             >
               In Progress
             </button>
@@ -84,7 +86,7 @@ function TaskDetails({ currentTaskDetails, setAllTask, allTask }) {
               type="button"
               value={"completed"}
               onClick={changeStatus}
-              className=" hover:border-b-2 border-b-white"
+              className=" hover:border-b border-b-white"
             >
               Complete
             </button>

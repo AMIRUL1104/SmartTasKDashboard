@@ -15,9 +15,12 @@ function Dashboard() {
     return userTasks ? JSON.parse(userTasks) : [];
   });
 
+  const [visibleTasks, setVisibleTasks] = useState(allTask);
+
   useEffect(() => {
     localStorage.setItem("userTasks", JSON.stringify(allTask));
   }, [allTask]);
+
   const addTask = ({ title, category, status, priority, textarea }) => {
     let taskTitle = title.trim().length > 0 ? title : "untitled document";
     console.log(taskTitle);
@@ -31,22 +34,34 @@ function Dashboard() {
       textarea,
     };
 
+    setVisibleTasks([...visibleTasks, addNewTask]);
     setAllTask([...allTask, addNewTask]);
   };
 
   // handleTaskShowing function
   const handleTaskShowing = (e) => {
     const id = e.target.id;
-    // allTask.filter((item) => {
-    //   if (item.id === id) {
-    //     setCurrentTaskDetails(item);
-    //     console.log(item);
-    //   }
-    // });
-
-    // setCurrentTaskDetails(clickedTask);
     setCurrentTaskDetails(id);
     setMainSectionToggle("taskDetails");
+  };
+
+  //  handle filtering function
+  const handleFiltering = (e) => {
+    const name = e.target.name;
+    const value = e.target.value;
+    console.log(value);
+
+    if (value === "all") return setVisibleTasks(allTask);
+
+    if (name === "taskSearch") {
+      setVisibleTasks(
+        allTask.filter((item) =>
+          item.taskTitle.toLowerCase().includes(value.toLowerCase())
+        )
+      );
+      return;
+    }
+    setVisibleTasks(allTask.filter((item) => item[name] === value));
   };
 
   // main section conditional rendering
@@ -68,13 +83,18 @@ function Dashboard() {
     );
   } else {
     content = (
-      <MainBox allTask={allTask} handleTaskShowing={handleTaskShowing} />
+      <MainBox
+        allTask={visibleTasks}
+        handleFiltering={handleFiltering}
+        handleTaskShowing={handleTaskShowing}
+      />
     );
   }
 
   return (
     <>
       <Header
+        handleFiltering={handleFiltering}
         setSidebarToggle={setSidebarToggle}
         setNewTaskPageToggle={setMainSectionToggle}
         newTaskPageToggle={mainSectionToggle}
@@ -82,9 +102,7 @@ function Dashboard() {
 
       <main
         className={` ${
-          SidebarToggle
-            ? "grid grid-cols-[250px_1fr] min-h-[calc(100vh-60px)] "
-            : " flex-1"
+          SidebarToggle ? "grid grid-cols-[250px_1fr] min-h-dvh " : " flex-1"
         }`}
       >
         {
@@ -93,8 +111,9 @@ function Dashboard() {
             <Sidebar
               SidebarToggle={SidebarToggle}
               setNewTaskPageToggle={setMainSectionToggle}
-              allTask={allTask}
+              allTask={visibleTasks}
               handleTaskShowing={handleTaskShowing}
+              handleFiltering={handleFiltering}
             />
           )
         }

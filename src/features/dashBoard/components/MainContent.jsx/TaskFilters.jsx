@@ -3,15 +3,15 @@ import StatusFilter from "./StatusFilter";
 import PriorityFilter from "./PriorityFilter";
 import SortDropdown from "./SortDropdown";
 
-function TaskFilters() {
+function TaskFilters({ handleFiltering }) {
   return (
     <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl  p-4 shadow-md">
       <div className="flex flex-wrap items-center justify-around gap-3">
-        <CategoryFilter />
-        <StatusFilter />
+        <CategoryFilter handleFiltering={handleFiltering} />
+        <StatusFilter handleFiltering={handleFiltering} />
       </div>
       <div className="flex flex-wrap items-center justify-around gap-3">
-        <PriorityFilter />
+        <PriorityFilter handleFiltering={handleFiltering} />
         <SortDropdown />
       </div>
     </div>

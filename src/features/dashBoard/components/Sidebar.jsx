@@ -5,7 +5,12 @@ import SearchField from "./reusable_component/SearchField";
 import { fas } from "@fortawesome/free-solid-svg-icons";
 library.add(fas);
 
-function Sidebar({ SidebarToggle, allTask, handleTaskShowing }) {
+function Sidebar({
+  SidebarToggle,
+  allTask,
+  handleTaskShowing,
+  handleFiltering,
+}) {
   return (
     <div
       className={`
@@ -17,7 +22,7 @@ function Sidebar({ SidebarToggle, allTask, handleTaskShowing }) {
     ${SidebarToggle ? "w-60 translate-x-0" : "w-0 -translate-x-full"}
   `}
     >
-      <SearchField />
+      <SearchField handleFiltering={handleFiltering} />
       <button
         type="submit"
         className="  hover:text-cyan-700  bg-gray-300 p-1.5 rounded-2xl  flex justify-between w-full px-2.5 items-center capitalize font-bold text-cyan-900"

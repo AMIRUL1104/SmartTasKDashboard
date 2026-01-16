@@ -4,7 +4,12 @@ import AddPageBtn from "./reusable_component/AddPageBtn";
 import SearchField from "./reusable_component/SearchField";
 import RemovePage from "./reusable_component/RemovePage";
 import CloseTaskDetails from "./Header/CloseTaskDetails";
-function Header({ setSidebarToggle, setNewTaskPageToggle, newTaskPageToggle }) {
+function Header({
+  setSidebarToggle,
+  setNewTaskPageToggle,
+  newTaskPageToggle,
+  handleFiltering,
+}) {
   let content;
   if (newTaskPageToggle === "newTaskPage") {
     content = <RemovePage setNewTaskPageToggle={setNewTaskPageToggle} />;
@@ -23,7 +28,7 @@ function Header({ setSidebarToggle, setNewTaskPageToggle, newTaskPageToggle }) {
       <div className="flex items-center justify-around gap-4">
         {content}
 
-        <SearchField />
+        <SearchField handleFiltering={handleFiltering} />
       </div>
     </header>
   );

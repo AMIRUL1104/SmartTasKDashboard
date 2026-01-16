@@ -7,9 +7,9 @@ function NewTaskField({ addTask, setNewTaskPageToggle }) {
   const [newTask, setNewTask] = useState({
     title: "",
     textarea: [{ id: "2", value: "" }], // dynamic, many values
-    category: "",
+    category: "all",
     status: "pending",
-    priority: "all",
+    priority: "medium",
   }); // new task values catcher
 
   // console.log(newTask.textarea);
@@ -316,7 +316,7 @@ function NewTaskField({ addTask, setNewTaskPageToggle }) {
           required
           className="rounded-lg bg-slate-700 px-4 py-2 text-sm font-medium text-white hover:bg-slate-600"
         >
-          <option value="" className=" mt-2.5">
+          <option value="all" className=" mt-2.5">
             Categories
           </option>
           <option value="work">Work</option>

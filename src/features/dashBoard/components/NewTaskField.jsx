@@ -12,8 +12,6 @@ function NewTaskField({ addTask, setNewTaskPageToggle }) {
     priority: "medium",
   }); // new task values catcher
 
-  // console.log(newTask.textarea);
-
   // all useRef Hooks
   const textareaRefs = useRef({}); //this hooks mostly used on dynamic textarea handling
   const newTextareaIdRef = useRef("2"); //last created textarea id stored in this ref
@@ -247,7 +245,7 @@ function NewTaskField({ addTask, setNewTaskPageToggle }) {
     let id = keydownedTextareaIdRef.current;
     if (!id) return;
     const el = textareaRefs.current[id];
-    // console.log(el);
+    console.log(el);
     if (!el) return;
     // Reset height to recalculate correctly (shrink support)
     el.style.height = "auto";

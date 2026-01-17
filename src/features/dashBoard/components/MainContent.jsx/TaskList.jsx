@@ -4,7 +4,7 @@ import { fas } from "@fortawesome/free-solid-svg-icons";
 library.add(fas);
 import { useState } from "react";
 
-function TaskList({ allTask, handleTaskShowing }) {
+function TaskList({ allTask, handleTaskShowing, openDeleteDrawer }) {
   const [EditDeleteVisible, setEditDeleteVisible] = useState(null);
 
   const handleEditDeleteVisible = (e) => {
@@ -18,6 +18,11 @@ function TaskList({ allTask, handleTaskShowing }) {
   return (
     // <div>
     <div className=" mt-4 grid grid-cols-[repeat(auto-fill,minmax(300px,1fr))] gap-4">
+      {allTask.length === 0 && (
+        <p className="text-center text-slate-900 text-3xl font-bold mt-8">
+          No tasks found.
+        </p>
+      )}
       {allTask.map((task) => (
         <div
           key={task.id}
@@ -50,11 +55,12 @@ function TaskList({ allTask, handleTaskShowing }) {
                     ? "absolute flex items-center justify-evenly flex-col-reverse gap-0.5"
                     : "hidden"
                 } border -ml-16  py-1.5 rounded`}
-                // className=" hidden  border -ml-16  py-1.5 rounded "
               >
                 <button
+                  id={task.id}
+                  onClick={openDeleteDrawer}
                   type="button"
-                  className=" text-red-600 hover:font-semibold hover:text-red-500"
+                  className="  text-red-600 hover:font-semibold hover:text-red-500"
                 >
                   Delete <FontAwesomeIcon icon={"trash"} />
                 </button>
@@ -62,7 +68,7 @@ function TaskList({ allTask, handleTaskShowing }) {
                   type="button"
                   className=" font-sm  px-2.5 min-w-16 hover:font-semibold hover:text-slate-300"
                 >
-                  Edit{" "}
+                  Edit
                   <FontAwesomeIcon icon={"pen-to-square"} className=" ml-1" />
                 </button>
               </div>

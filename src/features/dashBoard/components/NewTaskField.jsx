@@ -22,7 +22,6 @@ function NewTaskField({ addTask, setNewTaskPageToggle }) {
 
   //textarea typing time actions are handle by this functin
   const handleInput = (e) => {
-    e.target.setCustomValidity("");
     const id = e.target.id;
 
     if (id == 1) {
@@ -44,7 +43,7 @@ function NewTaskField({ addTask, setNewTaskPageToggle }) {
 
     const keydownedId = e.target.id;
     const keydownedTextAreaIndex = newTask.textarea.findIndex(
-      (item) => item.id == keydownedId
+      (item) => item.id == keydownedId,
     );
 
     const keydownedTextarea = e.target;
@@ -74,7 +73,7 @@ function NewTaskField({ addTask, setNewTaskPageToggle }) {
         textarea: prev.textarea.map((t) =>
           t.id === keydownedId
             ? { ...t, value: slicedKeydownedTextareaCursorInfrontValue }
-            : t
+            : t,
         ),
       }));
 
@@ -109,7 +108,7 @@ function NewTaskField({ addTask, setNewTaskPageToggle }) {
       const nextTextareaIndex = keydownedTextAreaIndex + 1;
 
       const nextTextarea = newTask.textarea.find(
-        (value, index) => index === nextTextareaIndex
+        (value, index) => index === nextTextareaIndex,
       );
       if (!nextTextarea) return;
       setFocusId(nextTextarea.id);
@@ -119,7 +118,7 @@ function NewTaskField({ addTask, setNewTaskPageToggle }) {
       const nextTextareaIndex = keydownedTextAreaIndex - 1;
 
       const nextTextarea = newTask.textarea.find(
-        (value, index) => index === nextTextareaIndex
+        (value, index) => index === nextTextareaIndex,
       );
 
       if (!nextTextarea) return newTaskTitleRefs.current.focus();
@@ -141,7 +140,7 @@ function NewTaskField({ addTask, setNewTaskPageToggle }) {
 
         const nextTextareaIndex = keydownedTextAreaIndex - 1;
         const nextTextarea = newTask.textarea.find(
-          (value, index) => index === nextTextareaIndex
+          (value, index) => index === nextTextareaIndex,
         );
 
         if (!nextTextarea) return newTaskTitleRefs.current.focus();
@@ -207,7 +206,7 @@ function NewTaskField({ addTask, setNewTaskPageToggle }) {
     setNewTask((prev) => ({
       ...prev,
       textarea: prev.textarea.map((t) =>
-        t.id === id ? { ...t, value: value } : t
+        t.id === id ? { ...t, value: value } : t,
       ),
     }));
   };

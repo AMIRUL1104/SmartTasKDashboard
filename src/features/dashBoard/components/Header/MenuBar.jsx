@@ -6,8 +6,7 @@ function MenuBar({ setSidebarToggle }) {
     <button onClick={() => setSidebarToggle((prev) => !prev)}>
       <FontAwesomeIcon
         icon={faBarsStaggered}
-        size="2x"
-        className=" text-cyan-700 ml-6"
+        className=" text-cyan-700 ml-6 max-sm:ml-3 max-xs:ml-2 text-4xl max-sm:text-2xl max-xs:text-lg"
       />
     </button>
   );

@@ -47,7 +47,6 @@ function Dashboard() {
     let item = allTask.find((e) => {
       return e.id === id;
     });
-    console.log(item);
 
     setSelectedItem(item);
     setIsDrawerOpen(true);
@@ -63,7 +62,6 @@ function Dashboard() {
     const updated = allTask.filter((item) => {
       return item.id !== selectedItem.id;
     });
-    console.log(updated);
 
     setVisibleTasks(updated);
     setAllTask(updated);
@@ -83,7 +81,6 @@ function Dashboard() {
   const handleFiltering = (e) => {
     const name = e.target.name;
     const value = e.target.value;
-    console.log(value);
 
     if (value === "all") return setVisibleTasks(allTask);
 

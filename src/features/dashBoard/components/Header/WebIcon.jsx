@@ -7,7 +7,7 @@ function WebIcon() {
         src={ReactIcon}
         alt="webicon"
         srcSet={ReactIcon}
-        className="w-6 bg-transparent rounded-full "
+        className="w-6 bg-transparent rounded-full max-xs:w-5 "
       />
     </div>
   );

@@ -24,8 +24,8 @@ function Header({
         <WebIcon />
         <MenuBar setSidebarToggle={setSidebarToggle} />
       </div>
-      <h2 className=" text-2xl font-bold">Welcome Amirul</h2>
-      <div className="flex items-center justify-around gap-4">
+      {/* <h2 className=" text-2xl font-bold">Welcome Amirul</h2> */}
+      <div className="flex items-center justify-around gap-4 ">
         {content}
 
         <SearchField handleFiltering={handleFiltering} />
@@ -35,8 +35,3 @@ function Header({
 }
 
 export default Header;
-// {newTaskPageToggle ? (
-//           <SaveTaskButton setNewTaskPageToggle={setNewTaskPageToggle} />
-//         ) : (
-//           <AddPageBtn setNewTaskPageToggle={setNewTaskPageToggle} />
-//         )}

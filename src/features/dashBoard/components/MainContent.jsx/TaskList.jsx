@@ -19,7 +19,7 @@ function TaskList({ allTask, handleTaskShowing, openDeleteDrawer }) {
     // <div>
     <div className=" mt-4 grid grid-cols-[repeat(auto-fill,minmax(300px,1fr))] gap-4">
       {allTask.length === 0 && (
-        <p className="text-center text-slate-900 text-3xl font-bold mt-8">
+        <p className="text-center text-slate-800 text-3xl font-bold mt-8">
           No tasks found.
         </p>
       )}

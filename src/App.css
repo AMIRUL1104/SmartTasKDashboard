@@ -22,4 +22,7 @@
   padding: 0rem;
   text-align: left;
 }
+@theme {
+  --breakpoint-xs: 30rem;
+}
 

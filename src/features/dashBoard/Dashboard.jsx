@@ -134,7 +134,9 @@ function Dashboard() {
 
       <main
         className={` ${
-          SidebarToggle ? "grid grid-cols-[250px_1fr] min-h-dvh " : " flex-1"
+          SidebarToggle
+            ? "grid grid-cols-[250px_1fr] min-h-[80%] max-md:grid-cols-[500px_1fr] max-md:relative "
+            : " flex-1  max-md:grid-cols-[500px_1fr]"
         }`}
       >
         {

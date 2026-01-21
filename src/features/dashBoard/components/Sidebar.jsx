@@ -14,11 +14,18 @@ function Sidebar({
   return (
     <div
       className={`
-     m-5 h-[87vh]
-    flex flex-col gap-6
-    overflow-hidden
-    rounded-xl border-2 border-gray-300 bg-cyan-950 p-4
-    transition-all duration-300 ease-in-out
+      m-5 h-[87vh]
+      mb-0
+      flex flex-col gap-6
+      overflow-hidden
+      rounded-xl 
+      border-2
+     border-gray-300
+     bg-cyan-950 p-4
+      transition
+      duration-300 
+      ease-in-out
+      opacity-100
     ${SidebarToggle ? "w-60 max-md:absolute max-md:left-0 max-md:top-0 z-50" : "w-0"}
   `}
     >

@@ -19,7 +19,7 @@ function Header({
     content = <AddPageBtn setNewTaskPageToggle={setNewTaskPageToggle} />;
   }
   return (
-    <header className=" bg-cyan-950 p-5 py-2 m-0 flex items-center justify-between">
+    <header className=" max-w-[1600px] bg-cyan-950 p-5 py-2 m-0 flex items-center justify-between">
       <div className="flex items-center justify-around">
         <WebIcon />
         <MenuBar setSidebarToggle={setSidebarToggle} />

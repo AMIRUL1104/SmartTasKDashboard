@@ -5,7 +5,12 @@ import NewTaskField from "./components/NewTaskField";
 import TaskDetails from "./components/TaskDetails";
 import { useState, useEffect } from "react";
 function Dashboard() {
-  const [SidebarToggle, setSidebarToggle] = useState(true);
+  const [SidebarToggle, setSidebarToggle] = useState(() => {
+    if (window.innerWidth < 1024) {
+      return false;
+    }
+    return true;
+  });
   const [mainSectionToggle, setMainSectionToggle] = useState("mainbox");
   const [currentTaskDetails, setCurrentTaskDetails] = useState(null);
   // all tasks or notes stored in this state
@@ -95,7 +100,6 @@ function Dashboard() {
     setVisibleTasks(allTask.filter((item) => item[name] === value));
   };
 
-  // main section conditional rendering
   let content;
   if (mainSectionToggle === "newTaskPage") {
     content = (
@@ -133,10 +137,8 @@ function Dashboard() {
       />
 
       <main
-        className={` ${
-          SidebarToggle
-            ? "grid grid-cols-[250px_1fr] min-h-[80%] max-md:grid-cols-[500px_1fr] max-md:relative "
-            : " flex-1  max-md:grid-cols-[500px_1fr]"
+        className={`max-md:relative  max-h-[90vh] overflow-hidden ${
+          SidebarToggle ? "grid grid-cols-[250px_1fr]  " : " flex-1  "
         }`}
       >
         {

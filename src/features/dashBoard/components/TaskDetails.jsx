@@ -1,7 +1,7 @@
 import DetailsTask from "./TaskdetailsJSX/DetailsTask";
 import { useState } from "react";
 
-function TaskDetails({ currentTaskDetails, setAllTask, allTask }) {
+function TaskDetails({ currentTaskDetails, dispatch, allTask }) {
   const [status, setStatus] = useState(false);
   const handleStatusDropdown = () => {
     setStatus((p) => !p);
@@ -9,22 +9,23 @@ function TaskDetails({ currentTaskDetails, setAllTask, allTask }) {
 
   // if the user wants to change the status of any task ;
   //  this function will  handle it
-  const changeStatus = (e) => {
-    const id = activeTask.id;
-    const value = e.target.value;
 
-    const updated = allTask.map((task) => {
-      if (task.id === id) {
-        return {
-          ...task,
-          status: value,
-        };
-      }
-      return task;
-    });
+  // const changeStatus = (e) => {
+  //   const id = activeTask.id;
+  //   const value = e.target.value;
 
-    setAllTask(updated); // update status on main state
-  };
+  //   const updated = allTask.map((task) => {
+  //     if (task.id === id) {
+  //       return {
+  //         ...task,
+  //         status: value,
+  //       };
+  //     }
+  //     return task;
+  //   });
+
+  //   setAllTask(updated); // update status on main state
+  // };
 
   // this task are show on main section
   let activeTask = allTask.find((item) => {
@@ -69,7 +70,12 @@ function TaskDetails({ currentTaskDetails, setAllTask, allTask }) {
             <button
               type="button"
               value={"pending"}
-              onClick={changeStatus}
+              onClick={() => {
+                dispatch({
+                  type: "SET_TASK_STATUS",
+                  payload: { id: activeTask.id, status: "pending" },
+                });
+              }}
               className=" hover:border-b border-b-white"
             >
               Pending
@@ -77,7 +83,12 @@ function TaskDetails({ currentTaskDetails, setAllTask, allTask }) {
             <button
               type="button"
               value={"in-progress"}
-              onClick={changeStatus}
+              onClick={() => {
+                dispatch({
+                  type: "SET_TASK_STATUS",
+                  payload: { id: activeTask.id, status: "in progress" },
+                });
+              }}
               className=" hover:border-b border-b-white"
             >
               In Progress
@@ -85,7 +96,12 @@ function TaskDetails({ currentTaskDetails, setAllTask, allTask }) {
             <button
               type="button"
               value={"completed"}
-              onClick={changeStatus}
+              onClick={() => {
+                dispatch({
+                  type: "SET_TASK_STATUS",
+                  payload: { id: activeTask.id, status: "completed" },
+                });
+              }}
               className=" hover:border-b border-b-white"
             >
               Complete

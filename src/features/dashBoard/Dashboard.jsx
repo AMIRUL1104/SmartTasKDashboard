@@ -121,7 +121,23 @@ function reducer(state, action) {
         visibleTasks: [...state.visibleTasks, newTask],
       };
     }
-
+    case "SET_TASK_STATUS": {
+      const { id, status } = action.payload;
+      const updatedTasks = state.allTask.map((task) => {
+        if (task.id === id) {
+          return {
+            ...task,
+            status: status,
+          };
+        }
+        return task;
+      });
+      return {
+        ...state,
+        allTask: updatedTasks,
+        visibleTasks: updatedTasks,
+      };
+    }
     default:
       return state;
   }
@@ -136,19 +152,17 @@ function Dashboard() {
   });
   const [mainSectionToggle, setMainSectionToggle] = useState("mainbox");
   const [currentTaskDetails, setCurrentTaskDetails] = useState(null);
-  // all tasks or notes stored in this state
 
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null); //for delete
 
+  // state management using useReducer
   const [headState, dispatch] = useReducer(reducer, initialValue);
+
   // storing all tasks in local storage whenever allTask state changes
   useEffect(() => {
     localStorage.setItem("userTasks", JSON.stringify(headState.allTask));
   }, [headState.allTask]);
-
-  console.log(headState.visibleTasks);
-  console.log(headState.allTask);
 
   // add new task function
   const addTask = ({ title, category, status, priority, textarea }) => {
@@ -192,19 +206,6 @@ function Dashboard() {
     setIsDrawerOpen(false);
     setSelectedItem(null);
   };
-  // delete task function
-  // const handleDeleteTask = () => {
-  //   // const id = e.currentTarget.id;
-  //   const updated = allTask.filter((item) => {
-  //     return item.id !== selectedItem.id;
-  //   });
-
-  //   setVisibleTasks(updated);
-  //   setAllTask(updated);
-
-  //   closeDrawer();
-  //   // console.log(id);
-  // };
 
   // handleTaskShowing function
   const handleTaskShowing = (e) => {
@@ -213,24 +214,7 @@ function Dashboard() {
     setMainSectionToggle("taskDetails");
   };
 
-  //  handle filtering function
-  // const handleFiltering = (e) => {
-  //   const name = e.target.name;
-  //   const value = e.target.value;
-
-  //   if (value === "all") return setVisibleTasks(allTask);
-
-  //   if (name === "taskSearch") {
-  //     setVisibleTasks(
-  //       allTask.filter((item) =>
-  //         item.taskTitle.toLowerCase().includes(value.toLowerCase()),
-  //       ),
-  //     );
-  //     return;
-  //   }
-  //   setVisibleTasks(allTask.filter((item) => item[name] === value));
-  // };
-
+  // conditional rendering of main section
   let content;
   if (mainSectionToggle === "newTaskPage") {
     content = (
@@ -243,7 +227,7 @@ function Dashboard() {
     content = (
       <TaskDetails
         allTask={headState.allTask}
-        setAllTask={setAllTask}
+        dispatch={dispatch}
         currentTaskDetails={currentTaskDetails}
       />
     );
@@ -277,10 +261,9 @@ function Dashboard() {
           SidebarToggle && (
             <Sidebar
               SidebarToggle={SidebarToggle}
-              // setMainSectionToggle={setMainSectionToggle}
               allTask={headState.visibleTasks}
               handleTaskShowing={handleTaskShowing}
-              // handleFiltering={handleFiltering}
+              dispatch={dispatch}
             />
           )
         }
@@ -322,6 +305,7 @@ function Dashboard() {
                   <p className="text-gray-700 mb-2 text-xl">
                     Are you sure you want to delete this task ?
                   </p>
+
                   <div className="bg-red-50 border border-red-200 rounded-lg p-3">
                     <h3 className="font-semibold text-red-800">
                       {selectedItem.taskTitle}

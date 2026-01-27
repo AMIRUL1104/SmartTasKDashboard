@@ -6,17 +6,17 @@ import RemovePage from "./reusable_component/RemovePage";
 import CloseTaskDetails from "./Header/CloseTaskDetails";
 function Header({
   setSidebarToggle,
-  setNewTaskPageToggle,
-  newTaskPageToggle,
-  handleFiltering,
+  setMainSectionToggle,
+  mainSectionToggle,
+  dispatch,
 }) {
   let content;
-  if (newTaskPageToggle === "newTaskPage") {
-    content = <RemovePage setNewTaskPageToggle={setNewTaskPageToggle} />;
-  } else if (newTaskPageToggle === "taskDetails") {
-    content = <CloseTaskDetails setNewTaskPageToggle={setNewTaskPageToggle} />;
+  if (mainSectionToggle === "newTaskPage") {
+    content = <RemovePage setMainSectionToggle={setMainSectionToggle} />;
+  } else if (mainSectionToggle === "taskDetails") {
+    content = <CloseTaskDetails setMainSectionToggle={setMainSectionToggle} />;
   } else {
-    content = <AddPageBtn setNewTaskPageToggle={setNewTaskPageToggle} />;
+    content = <AddPageBtn setMainSectionToggle={setMainSectionToggle} />;
   }
   return (
     <header className=" max-w-[1600px] bg-cyan-950 p-5 py-2 m-0 flex items-center justify-between">
@@ -28,7 +28,7 @@ function Header({
       <div className="flex items-center justify-around gap-4 ">
         {content}
 
-        <SearchField handleFiltering={handleFiltering} />
+        <SearchField dispatch={dispatch} />
       </div>
     </header>
   );

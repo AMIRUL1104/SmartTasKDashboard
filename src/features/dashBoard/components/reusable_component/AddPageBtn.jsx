@@ -5,11 +5,11 @@ import { library } from "@fortawesome/fontawesome-svg-core";
 import { fas } from "@fortawesome/free-solid-svg-icons";
 
 library.add(fas);
-function AddPageBtn({ setNewTaskPageToggle }) {
+function AddPageBtn({ setMainSectionToggle }) {
   return (
     <button
       type="submit"
-      onClick={() => setNewTaskPageToggle("newTaskPage")}
+      onClick={() => setMainSectionToggle("newTaskPage")}
       className=" max-sm:text-sm max-sm:px-2 max-sm:py-1 max-xs:text-sm max-xs:py-0.5 max-xs:font-medium  hover:shadow hover:shadow-amber-50 hover:text-cyan-700 bg-gray-300 p-1.5  rounded-2xl  flex justify-between w-auto px-2.5 items-center capitalize font-bold text-cyan-900"
     >
       <span className=" mr-2.5 max-xs:mr-1.5">new page</span>{" "}

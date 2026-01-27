@@ -19,7 +19,7 @@ function TaskList({ allTask, handleTaskShowing, openDeleteDrawer }) {
     // <div>
     <div className=" mt-4 grid grid-cols-[repeat(auto-fill,minmax(300px,1fr))] gap-4">
       {allTask.length === 0 && (
-        <p className="text-center text-slate-800 text-3xl font-bold mt-8">
+        <p className=" text-center  w-full text-slate-800 text-3xl font-bold mt-8">
           No tasks found.
         </p>
       )}
@@ -39,7 +39,7 @@ function TaskList({ allTask, handleTaskShowing, openDeleteDrawer }) {
               {task.taskTitle}
             </h3>
 
-            <div className="relative">
+            <div className="relative ">
               <button type="button" className=" rounded-full ">
                 <FontAwesomeIcon
                   icon={"ellipsis-vertical"}
@@ -54,7 +54,7 @@ function TaskList({ allTask, handleTaskShowing, openDeleteDrawer }) {
                   EditDeleteVisible === task.id
                     ? "absolute flex items-center justify-evenly flex-col-reverse gap-0.5"
                     : "hidden"
-                } border -ml-16  py-1.5 rounded`}
+                } text-cyan-900 bg-gray-300 border -ml-16  py-1.5 rounded`}
               >
                 <button
                   id={task.id}
@@ -66,7 +66,7 @@ function TaskList({ allTask, handleTaskShowing, openDeleteDrawer }) {
                 </button>
                 <button
                   type="button"
-                  className=" font-sm  px-2.5 min-w-16 hover:font-semibold hover:text-slate-300"
+                  className=" font-sm  px-2.5 min-w-16 hover:font-semibold hover:text-cyan-950"
                 >
                   Edit
                   <FontAwesomeIcon icon={"pen-to-square"} className=" ml-1" />

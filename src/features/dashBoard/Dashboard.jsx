@@ -3,7 +3,130 @@ import Sidebar from "./components/Sidebar";
 import MainBox from "./components/MainBox";
 import NewTaskField from "./components/NewTaskField";
 import TaskDetails from "./components/TaskDetails";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useReducer } from "react";
+
+const initialValue = {
+  allTask: JSON.parse(localStorage.getItem("userTasks")),
+  visibleTasks: JSON.parse(localStorage.getItem("userTasks")),
+  filters: {
+    category: "all",
+    status: "all",
+    priority: "all",
+    sort: "all",
+    search: "",
+  },
+};
+
+function reducer(state, action) {
+  switch (action.type) {
+    case "SET_CATEGORY": {
+      const filteredCategory = action.payload;
+      return {
+        ...state,
+        filters: {
+          ...state.filter,
+          filteredCategory,
+        },
+
+        visibleTasks:
+          filteredCategory === "all"
+            ? state.allTask
+            : state.allTask.filter(
+                (item) => item.category === filteredCategory,
+              ),
+      };
+    }
+    case "SET_STATUS": {
+      const filteredStatus = action.payload;
+      return {
+        ...state,
+        filters: {
+          ...state.filter,
+          filteredStatus,
+        },
+
+        visibleTasks:
+          filteredStatus === "all"
+            ? state.allTask
+            : state.allTask.filter((item) => item.status === filteredStatus),
+      };
+    }
+    case "SET_PRIORITY": {
+      const filteredPriority = action.payload;
+      return {
+        ...state,
+        filters: {
+          ...state.filter,
+          filteredPriority,
+        },
+
+        visibleTasks:
+          filteredPriority === "all"
+            ? state.allTask
+            : state.allTask.filter(
+                (item) => item.category === filteredPriority,
+              ),
+      };
+    }
+    case "SET_SORT": {
+      const filteredSort = action.payload;
+      return {
+        ...state,
+        filters: {
+          ...state.filter,
+          filteredSort,
+        },
+
+        visibleTasks:
+          filteredSort === "all"
+            ? state.allTask
+            : state.allTask.filter((item) => item.category === filteredSort),
+      };
+    }
+    case "SET_SEARCH": {
+      const filteredSearch = action.payload;
+      return {
+        ...state,
+        filters: {
+          ...state.filter,
+          filteredSearch,
+        },
+
+        visibleTasks:
+          filteredSearch === ""
+            ? state.allTask
+            : state.allTask.filter((item) =>
+                item.taskTitle
+                  .toLowerCase()
+                  .includes(filteredSearch.toLowerCase()),
+              ),
+      };
+    }
+    case "SET_DELETETASK": {
+      const deleteTask = action.payload;
+
+      return {
+        ...state,
+        allTask: state.allTask.filter((item) => item.id !== deleteTask),
+        visibleTasks: state.visibleTasks.filter(
+          (item) => item.id !== deleteTask,
+        ),
+      };
+    }
+    case "SET_NEWTASK": {
+      const newTask = action.payload;
+      return {
+        ...state,
+        allTask: [...state.allTask, newTask],
+        visibleTasks: [...state.visibleTasks, newTask],
+      };
+    }
+
+    default:
+      return state;
+  }
+}
+
 function Dashboard() {
   const [SidebarToggle, setSidebarToggle] = useState(() => {
     if (window.innerWidth < 1024) {
@@ -14,18 +137,18 @@ function Dashboard() {
   const [mainSectionToggle, setMainSectionToggle] = useState("mainbox");
   const [currentTaskDetails, setCurrentTaskDetails] = useState(null);
   // all tasks or notes stored in this state
-  const [allTask, setAllTask] = useState(() => {
-    let userTasks = localStorage.getItem("userTasks");
-    return userTasks ? JSON.parse(userTasks) : [];
-  });
-  const [visibleTasks, setVisibleTasks] = useState(allTask);
+
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null); //for delete
 
+  const [headState, dispatch] = useReducer(reducer, initialValue);
   // storing all tasks in local storage whenever allTask state changes
   useEffect(() => {
-    localStorage.setItem("userTasks", JSON.stringify(allTask));
-  }, [allTask]);
+    localStorage.setItem("userTasks", JSON.stringify(headState.allTask));
+  }, [headState.allTask]);
+
+  console.log(headState.visibleTasks);
+  console.log(headState.allTask);
 
   // add new task function
   const addTask = ({ title, category, status, priority, textarea }) => {
@@ -41,39 +164,47 @@ function Dashboard() {
       textarea,
     };
 
-    setVisibleTasks([...visibleTasks, addNewTask]);
-    setAllTask([...allTask, addNewTask]);
+    dispatch({ type: "SET_NEWTASK", payload: addNewTask });
+    // return headState.map((item) => {
+    //   return {
+    //     ...item,
+    //     allTask: [...headState.allTask, addNewTask],
+    //   };
+    // });
+    // setVisibleTasks([...visibleTasks, addNewTask]);
+    // setAllTask([...allTask, addNewTask]);
   };
 
   // delete drawer functions
   const openDeleteDrawer = (e) => {
-    const id = e.currentTarget.id;
+    const id = e.target.id;
+    setIsDrawerOpen(true);
 
-    let item = allTask.find((e) => {
-      return e.id === id;
+    let item = headState.allTask.find((e) => {
+      return e.id == id;
     });
 
     setSelectedItem(item);
-    setIsDrawerOpen(true);
   };
+
   // close drawer function
   const closeDrawer = () => {
     setIsDrawerOpen(false);
     setSelectedItem(null);
   };
   // delete task function
-  const handleDeleteTask = () => {
-    // const id = e.currentTarget.id;
-    const updated = allTask.filter((item) => {
-      return item.id !== selectedItem.id;
-    });
+  // const handleDeleteTask = () => {
+  //   // const id = e.currentTarget.id;
+  //   const updated = allTask.filter((item) => {
+  //     return item.id !== selectedItem.id;
+  //   });
 
-    setVisibleTasks(updated);
-    setAllTask(updated);
+  //   setVisibleTasks(updated);
+  //   setAllTask(updated);
 
-    closeDrawer();
-    // console.log(id);
-  };
+  //   closeDrawer();
+  //   // console.log(id);
+  // };
 
   // handleTaskShowing function
   const handleTaskShowing = (e) => {
@@ -83,22 +214,22 @@ function Dashboard() {
   };
 
   //  handle filtering function
-  const handleFiltering = (e) => {
-    const name = e.target.name;
-    const value = e.target.value;
+  // const handleFiltering = (e) => {
+  //   const name = e.target.name;
+  //   const value = e.target.value;
 
-    if (value === "all") return setVisibleTasks(allTask);
+  //   if (value === "all") return setVisibleTasks(allTask);
 
-    if (name === "taskSearch") {
-      setVisibleTasks(
-        allTask.filter((item) =>
-          item.taskTitle.toLowerCase().includes(value.toLowerCase()),
-        ),
-      );
-      return;
-    }
-    setVisibleTasks(allTask.filter((item) => item[name] === value));
-  };
+  //   if (name === "taskSearch") {
+  //     setVisibleTasks(
+  //       allTask.filter((item) =>
+  //         item.taskTitle.toLowerCase().includes(value.toLowerCase()),
+  //       ),
+  //     );
+  //     return;
+  //   }
+  //   setVisibleTasks(allTask.filter((item) => item[name] === value));
+  // };
 
   let content;
   if (mainSectionToggle === "newTaskPage") {
@@ -111,7 +242,7 @@ function Dashboard() {
   } else if (mainSectionToggle === "taskDetails") {
     content = (
       <TaskDetails
-        allTask={allTask}
+        allTask={headState.allTask}
         setAllTask={setAllTask}
         currentTaskDetails={currentTaskDetails}
       />
@@ -119,9 +250,9 @@ function Dashboard() {
   } else {
     content = (
       <MainBox
-        allTask={visibleTasks}
-        handleFiltering={handleFiltering}
+        allTask={headState.visibleTasks}
         handleTaskShowing={handleTaskShowing}
+        dispatch={dispatch}
         openDeleteDrawer={openDeleteDrawer}
       />
     );
@@ -130,14 +261,14 @@ function Dashboard() {
   return (
     <>
       <Header
-        handleFiltering={handleFiltering}
+        dispatch={dispatch}
         setSidebarToggle={setSidebarToggle}
-        setNewTaskPageToggle={setMainSectionToggle}
-        newTaskPageToggle={mainSectionToggle}
+        setMainSectionToggle={setMainSectionToggle}
+        mainSectionToggle={mainSectionToggle}
       />
 
       <main
-        className={`max-md:relative  max-h-[90vh] overflow-hidden ${
+        className={`max-md:relative  max-h-[90vh] overflow-auto ${
           SidebarToggle ? "grid grid-cols-[250px_1fr]  " : " flex-1  "
         }`}
       >
@@ -146,10 +277,10 @@ function Dashboard() {
           SidebarToggle && (
             <Sidebar
               SidebarToggle={SidebarToggle}
-              setNewTaskPageToggle={setMainSectionToggle}
-              allTask={visibleTasks}
+              // setMainSectionToggle={setMainSectionToggle}
+              allTask={headState.visibleTasks}
               handleTaskShowing={handleTaskShowing}
-              handleFiltering={handleFiltering}
+              // handleFiltering={handleFiltering}
             />
           )
         }
@@ -218,7 +349,13 @@ function Dashboard() {
                   Cancel
                 </button>
                 <button
-                  onClick={handleDeleteTask}
+                  onClick={() => {
+                    dispatch({
+                      type: "SET_DELETETASK",
+                      payload: selectedItem.id,
+                    });
+                    closeDrawer();
+                  }}
                   className="flex-1 px-4 py-3 bg-red-600 text-white rounded-lg font-semibold hover:bg-red-700 transition-colors"
                 >
                   Delete

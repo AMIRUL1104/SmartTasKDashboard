@@ -3,11 +3,13 @@ import Sidebar from "./components/Sidebar";
 import MainBox from "./components/MainBox";
 import NewTaskField from "./components/NewTaskField";
 import TaskDetails from "./components/TaskDetails";
-import { useState, useEffect, useReducer } from "react";
+import { useState, useReducer, useEffect } from "react";
+// import useLocaleStorage from "./components/hooks/useLocaleStorage";
+// import useLocaleStorage from "./components/hooks/useLocaleStorage";
 
 const initialValue = {
-  allTask: JSON.parse(localStorage.getItem("userTasks")),
-  visibleTasks: JSON.parse(localStorage.getItem("userTasks")),
+  allTask: JSON.parse(localStorage.getItem("userTasks")) || [],
+  visibleTasks: JSON.parse(localStorage.getItem("userTasks")) || [],
   filters: {
     category: "all",
     status: "all",
@@ -24,7 +26,7 @@ function reducer(state, action) {
       return {
         ...state,
         filters: {
-          ...state.filter,
+          ...state.filters,
           filteredCategory,
         },
 
@@ -41,7 +43,7 @@ function reducer(state, action) {
       return {
         ...state,
         filters: {
-          ...state.filter,
+          ...state.filters,
           filteredStatus,
         },
 
@@ -56,7 +58,7 @@ function reducer(state, action) {
       return {
         ...state,
         filters: {
-          ...state.filter,
+          ...state.filters,
           filteredPriority,
         },
 
@@ -64,7 +66,7 @@ function reducer(state, action) {
           filteredPriority === "all"
             ? state.allTask
             : state.allTask.filter(
-                (item) => item.category === filteredPriority,
+                (item) => item.priority === filteredPriority,
               ),
       };
     }
@@ -73,7 +75,7 @@ function reducer(state, action) {
       return {
         ...state,
         filters: {
-          ...state.filter,
+          ...state.filters,
           filteredSort,
         },
 
@@ -88,7 +90,7 @@ function reducer(state, action) {
       return {
         ...state,
         filters: {
-          ...state.filter,
+          ...state.filters,
           filteredSearch,
         },
 
@@ -115,6 +117,7 @@ function reducer(state, action) {
     }
     case "SET_NEWTASK": {
       const newTask = action.payload;
+
       return {
         ...state,
         allTask: [...state.allTask, newTask],
@@ -159,7 +162,6 @@ function Dashboard() {
   // state management using useReducer
   const [headState, dispatch] = useReducer(reducer, initialValue);
 
-  // storing all tasks in local storage whenever allTask state changes
   useEffect(() => {
     localStorage.setItem("userTasks", JSON.stringify(headState.allTask));
   }, [headState.allTask]);
@@ -167,7 +169,7 @@ function Dashboard() {
   // add new task function
   const addTask = ({ title, category, status, priority, textarea }) => {
     let taskTitle = title.trim().length > 0 ? title : "untitled document";
-    console.log(taskTitle);
+    // console.log(taskTitle);
 
     let addNewTask = {
       id: crypto.randomUUID(),
@@ -188,6 +190,7 @@ function Dashboard() {
     // setVisibleTasks([...visibleTasks, addNewTask]);
     // setAllTask([...allTask, addNewTask]);
   };
+  // console.log(headState.allTask);
 
   // delete drawer functions
   const openDeleteDrawer = (e) => {
@@ -235,6 +238,7 @@ function Dashboard() {
     content = (
       <MainBox
         allTask={headState.visibleTasks}
+        // allTask={allTasks}
         handleTaskShowing={handleTaskShowing}
         dispatch={dispatch}
         openDeleteDrawer={openDeleteDrawer}

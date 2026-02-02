@@ -49,6 +49,14 @@ function NewTaskField({ addTask, setNewTaskPageToggle }) {
     const keydownedTextarea = e.target;
     const keydownedTextareaValue = e.target.value;
     const cursorPositionStart = keydownedTextarea.selectionStart;
+    const cursorPositionEnd = keydownedTextarea.selectionEnd;
+    // console.log(cursorPositionEnd);
+
+    const zeroToPositionEnd = keydownedTextareaValue.slice(
+      0,
+      cursorPositionEnd,
+    );
+    // console.log(zeroToPositionEnd);
 
     if (e.key === "Enter" && e.target.name === "title") {
       e.preventDefault();
@@ -124,10 +132,6 @@ function NewTaskField({ addTask, setNewTaskPageToggle }) {
       if (!nextTextarea) return newTaskTitleRefs.current.focus();
       setFocusId(nextTextarea.id);
     } else if (e.key === "Backspace") {
-      // const zeroToPositionStart = keydownedTextareaValue.slice(
-      //   0,
-      //   cursorPositionStart
-      // );
       if (keydownedTextareaValue.length === 0) {
         let updated = [...newTask.textarea];
         updated = newTask.textarea.filter((item) => item.id !== keydownedId);
@@ -146,37 +150,35 @@ function NewTaskField({ addTask, setNewTaskPageToggle }) {
         if (!nextTextarea) return newTaskTitleRefs.current.focus();
         setFocusId(nextTextarea.id);
       }
-      // if (zeroToPositionStart.length === 0) {
-      //   const nextTextareaIndex = keydownedTextAreaIndex - 1;
 
-      //   const nextTextarea = newTask.textarea.find(
-      //     (value, index) => index === nextTextareaIndex
-      //   );
+      if (zeroToPositionEnd.length === 0) {
+        const previousTextareaIndex = keydownedTextAreaIndex - 1;
 
-      //   const id = nextTextarea.id;
-      //   console.log(id);
-      //   const value = e.target.value;
+        const previousTextarea = newTask.textarea.find(
+          (value, index) => index === previousTextareaIndex,
+        );
+        if (!previousTextarea) return keydownedTextarea;
 
-      //   setNewTask((prev) => ({
-      //     ...prev,
-      //     textarea: prev.textarea.map((t) =>
-      //       t.id === id ? { ...t, value: t.value + value } : t
-      //     ),
-      //   }));
-      //   console.log(value);
+        const previousTextareaId = previousTextarea.id;
+        const previousTextareaValue = previousTextarea.value;
+        const currentTextareaValue = e.target.value + " ";
+        const mergedValue = previousTextareaValue.concat(currentTextareaValue);
 
-      //   let updated = [...newTask.textarea];
-      //   updated = newTask.textarea.filter((item) => item.id !== keydownedId);
-      //   setNewTask((prev) => {
-      //     return {
-      //       ...prev,
-      //       textarea: updated,
-      //     };
-      //   });
+        setNewTask((prev) => {
+          const updatedTextarea = (prev.textarea ?? [])
+            .map((t) =>
+              t.id === previousTextareaId ? { ...t, value: mergedValue } : t,
+            )
+            .filter((item) => item.id !== keydownedId);
+          return {
+            ...prev,
+            textarea: updatedTextarea,
+          };
+        });
 
-      //   if (!nextTextarea) return newTaskTitleRefs.current.focus();
-      //   setFocusId(nextTextarea.id);
-      // }
+        if (!previousTextarea) return newTaskTitleRefs.current.focus();
+        setFocusId(previousTextarea.id);
+      }
     }
   };
 
@@ -244,7 +246,6 @@ function NewTaskField({ addTask, setNewTaskPageToggle }) {
     let id = keydownedTextareaIdRef.current;
     if (!id) return;
     const el = textareaRefs.current[id];
-    console.log(el);
     if (!el) return;
     // Reset height to recalculate correctly (shrink support)
     el.style.height = "auto";

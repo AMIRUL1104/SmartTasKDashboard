@@ -7,7 +7,7 @@ function DetailsTask({ tasks }) {
         return (
           <p
             key={e.id}
-            className="  focus:bg-sky-100 w-full 
+            className="  w-full 
           text-xl
           font-normal  my-4"
           >

@@ -7,26 +7,6 @@ function TaskDetails({ currentTaskDetails, dispatch, allTask }) {
     setStatus((p) => !p);
   };
 
-  // if the user wants to change the status of any task ;
-  //  this function will  handle it
-
-  // const changeStatus = (e) => {
-  //   const id = activeTask.id;
-  //   const value = e.target.value;
-
-  //   const updated = allTask.map((task) => {
-  //     if (task.id === id) {
-  //       return {
-  //         ...task,
-  //         status: value,
-  //       };
-  //     }
-  //     return task;
-  //   });
-
-  //   setAllTask(updated); // update status on main state
-  // };
-
   // this task are show on main section
   let activeTask = allTask.find((item) => {
     return item.id === currentTaskDetails;

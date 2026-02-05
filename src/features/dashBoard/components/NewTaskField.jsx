@@ -39,31 +39,57 @@ function NewTaskField({ addTask, setNewTaskPageToggle }) {
 
   //this function handle  all keyboard keys action like Enter,Arrows,Backspace etc
   const handleKeyDown = (e) => {
-    const id = crypto.randomUUID(); // new textarea id
+    // console.log(id);
 
     const keydownedId = e.target.id;
     const keydownedTextAreaIndex = newTask.textarea.findIndex(
       (item) => item.id == keydownedId,
     );
+    console.log(keydownedTextAreaIndex);
 
     const keydownedTextarea = e.target;
     const keydownedTextareaValue = e.target.value;
     const cursorPositionStart = keydownedTextarea.selectionStart;
     const cursorPositionEnd = keydownedTextarea.selectionEnd;
-    // console.log(cursorPositionEnd);
 
     const zeroToPositionEnd = keydownedTextareaValue.slice(
       0,
       cursorPositionEnd,
     );
-    // console.log(zeroToPositionEnd);
 
     if (e.key === "Enter" && e.target.name === "title") {
       e.preventDefault();
-      textareaRefs.current["2"].focus();
-      newTextareaIdRef.current["2"];
+      if (newTask.textarea.length > 0) {
+        let id = newTask.textarea[0].id;
+        textareaRefs.current[id].focus();
+        newTextareaIdRef.current[id];
+      }
+      if (newTask.textarea.length === 0) {
+        const id = crypto.randomUUID(); // new textarea id
+
+        // new Textarea id and value set on newtask textarea array
+        setNewTask((prev) => {
+          const newTextarea = {
+            id: id,
+            value: "",
+          };
+
+          const updated = [...prev.textarea];
+
+          updated.splice(keydownedTextAreaIndex + 1, 0, newTextarea);
+
+          return {
+            ...prev,
+            textarea: updated,
+          };
+        });
+        setTaskField((prev) => [...prev, { id: id }]);
+
+        setFocusId(id);
+      }
     } else if (e.key === "Enter" && e.target.name !== "title") {
       e.preventDefault();
+      const id = crypto.randomUUID(); // new textarea id
 
       newTextareaIdRef.current = id; // latest textarea id store in ref
       keydownedTextareaIdRef.current = keydownedId;
@@ -75,27 +101,19 @@ function NewTaskField({ addTask, setNewTaskPageToggle }) {
       const slicedKeydownedTextareaCursorBehindValue =
         keydownedTextareaValue.slice(cursorPositionStart);
 
-      // keydownedId Textarea value setting
-      setNewTask((prev) => ({
-        ...prev,
-        textarea: prev.textarea.map((t) =>
-          t.id === keydownedId
-            ? { ...t, value: slicedKeydownedTextareaCursorInfrontValue }
-            : t,
-        ),
-      }));
-
-      // new Textarea id and value set on newtask textarea array
       setNewTask((prev) => {
         const newTextarea = {
           id: id,
           value: slicedKeydownedTextareaCursorBehindValue,
         };
 
-        const updated = [...prev.textarea];
+        const updated = prev.textarea.map((t) =>
+          t.id === keydownedId
+            ? { ...t, value: slicedKeydownedTextareaCursorInfrontValue }
+            : t,
+        );
 
         updated.splice(keydownedTextAreaIndex + 1, 0, newTextarea);
-        // console.log("updated : " + updated);
 
         return {
           ...prev,
@@ -103,21 +121,44 @@ function NewTaskField({ addTask, setNewTaskPageToggle }) {
         };
       });
 
+      // keydownedId Textarea value setting
+      // setNewTask((prev) => ({
+      //   ...prev,
+      //   textarea: prev.textarea.map((t) =>
+      //     t.id === keydownedId
+      //       ? { ...t, value: slicedKeydownedTextareaCursorInfrontValue }
+      //       : t,
+      //   ),
+      // }));
+
+      // // new Textarea id and value set on newtask textarea array
+      // setNewTask((prev) => {
+      //   const newTextarea = {
+      //     id: id,
+      //     value: slicedKeydownedTextareaCursorBehindValue,
+      //   };
+
+      //   const updated = [...prev.textarea];
+
+      //   updated.splice(keydownedTextAreaIndex + 1, 0, newTextarea);
+
+      //   return {
+      //     ...prev,
+      //     textarea: updated,
+      //   };
+      // });
+
       setTaskField((prev) => [...prev, { id: id }]);
 
       setFocusId(id);
-      // console.log(focusId);
     } else if (e.key === "ArrowDown") {
       e.preventDefault();
-      // console.log(keydownedId);
 
-      if (e.target.name === "title") return textareaRefs.current["2"].focus();
+      let id = newTask.textarea[0].id;
+      if (e.target.name === "title") return textareaRefs.current[id].focus();
 
       const nextTextareaIndex = keydownedTextAreaIndex + 1;
-
-      const nextTextarea = newTask.textarea.find(
-        (value, index) => index === nextTextareaIndex,
-      );
+      let nextTextarea = newTask.textarea[nextTextareaIndex];
       if (!nextTextarea) return;
       setFocusId(nextTextarea.id);
     } else if (e.key === "ArrowUp") {
@@ -154,13 +195,13 @@ function NewTaskField({ addTask, setNewTaskPageToggle }) {
       if (zeroToPositionEnd.length === 0) {
         const previousTextareaIndex = keydownedTextAreaIndex - 1;
 
-        const previousTextarea = newTask.textarea.find(
-          (value, index) => index === previousTextareaIndex,
-        );
+        const previousTextarea = newTask.textarea[previousTextareaIndex];
+
         if (!previousTextarea) return keydownedTextarea;
 
         const previousTextareaId = previousTextarea.id;
         const previousTextareaValue = previousTextarea.value;
+        console.log(previousTextareaValue.length);
         const currentTextareaValue = e.target.value + " ";
         const mergedValue = previousTextareaValue.concat(currentTextareaValue);
 
@@ -177,19 +218,20 @@ function NewTaskField({ addTask, setNewTaskPageToggle }) {
         });
 
         if (!previousTextarea) return newTaskTitleRefs.current.focus();
-        setFocusId(previousTextarea.id);
+
+        requestAnimationFrame(() => {
+          const el = textareaRefs.current[previousTextarea.id];
+          if (!el) return;
+
+          el.focus();
+          el.setSelectionRange(
+            previousTextareaValue.length,
+            previousTextareaValue.length,
+          );
+        });
       }
     }
   };
-
-  // const splitedKeydownedTextareaValue = keydownedTextareaValue.split("");
-  // const end = keydownedTextareaValue.length;
-  // console.log(slicedKeydownedTextareaCursorBehindValue);
-  // console.log(keydownedTextareaValue);
-  // const cursorPositionEnd = keydownedTextarea.selectionEnd;
-  // console.log(
-  //   "Start : " + cursorPositionStart + "end : " + cursorPositionEnd
-  // );
 
   //Task title ,cetagories ,status , priority etc. properties value catching function
   const handleChange = (e) => {

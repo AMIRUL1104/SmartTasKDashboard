@@ -45,12 +45,15 @@ function NewTaskField({ addTask, setNewTaskPageToggle }) {
     const keydownedTextAreaIndex = newTask.textarea.findIndex(
       (item) => item.id == keydownedId,
     );
-    console.log(keydownedTextAreaIndex);
+    // console.log(keydownedTextAreaIndex);
 
     const keydownedTextarea = e.target;
     const keydownedTextareaValue = e.target.value;
     const cursorPositionStart = keydownedTextarea.selectionStart;
     const cursorPositionEnd = keydownedTextarea.selectionEnd;
+    console.log("cursorPositionStart", cursorPositionStart);
+    console.log("cursorPositionEnd", cursorPositionEnd);
+    console.log("keydownedTextareaValue length", keydownedTextareaValue.length);
 
     const zeroToPositionEnd = keydownedTextareaValue.slice(
       0,
@@ -228,6 +231,47 @@ function NewTaskField({ addTask, setNewTaskPageToggle }) {
             previousTextareaValue.length,
             previousTextareaValue.length,
           );
+        });
+      }
+    } else if (e.key === "ArrowRight") {
+      // cursor যদি একেবারে শেষে থাকে
+      if (cursorPositionEnd === keydownedTextareaValue.length) {
+        const nextTextarea = newTask.textarea[keydownedTextAreaIndex + 1];
+
+        if (!nextTextarea) {
+          newTaskTitleRefs.current?.focus();
+          return;
+        }
+
+        e.preventDefault();
+
+        requestAnimationFrame(() => {
+          const el = textareaRefs.current[nextTextarea.id];
+          if (!el) return;
+
+          el.focus();
+          el.setSelectionRange(0, 0);
+        });
+      }
+    } else if (e.key === "ArrowLeft") {
+      // cursor যদি একেবারে শুরুতে থাকে
+      if (cursorPositionStart === 0) {
+        const prevTextarea = newTask.textarea[keydownedTextAreaIndex - 1];
+
+        if (!prevTextarea) {
+          newTaskTitleRefs.current?.focus();
+          return;
+        }
+
+        e.preventDefault();
+
+        requestAnimationFrame(() => {
+          const el = textareaRefs.current[prevTextarea.id];
+          if (!el) return;
+
+          const end = prevTextarea.value?.length ?? 0;
+          el.focus();
+          el.setSelectionRange(end, end);
         });
       }
     }

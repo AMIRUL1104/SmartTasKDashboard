@@ -6,7 +6,10 @@ library.add(fas);
 import { useState, useEffect } from "react";
 
 const TaskFieldPieces = forwardRef(
-  ({ handleKeyDown, id, value, handleTextarea, handleInput }, ref) => {
+  (
+    { handleKeyDown, id, value, handleTextarea, handleInput, handleTitlePast },
+    ref,
+  ) => {
     const [textEditBtn, setTextEditBtn] = useState(false);
     const [isPlaceholder, setPlaceHolder] = useState(false);
     const [isNeedBg, setBg] = useState(false);
@@ -53,6 +56,7 @@ const TaskFieldPieces = forwardRef(
           placeholder={isPlaceholder ? "Write here..." : ""}
           onKeyDown={handleKeyDown}
           onChange={handleTextarea}
+          onPaste={handleTitlePast}
           value={value}
           className={` focus:bg-sky-100 w-full 
           text-xl
@@ -62,12 +66,12 @@ const TaskFieldPieces = forwardRef(
           resize-none
           overflow-hidden
            p-2 pl-0 rounded-lg ${textEditBtn ? " ml-0" : "ml-7"} ${
-            isNeedBg ? " bg-sky-300" : "bg-transparent"
-          } `}
+             isNeedBg ? " bg-sky-300" : "bg-transparent"
+           } `}
         />
       </div>
     );
-  }
+  },
 );
 
 export default TaskFieldPieces;

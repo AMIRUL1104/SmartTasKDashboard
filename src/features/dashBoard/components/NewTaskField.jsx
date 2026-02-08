@@ -20,6 +20,8 @@ function NewTaskField({ addTask, setNewTaskPageToggle }) {
 
   const newTaskTitleRefs = useRef({});
 
+  // ✅✅✅
+  // ✅✅✅
   //textarea typing time actions are handle by this functin
   const handleInput = (e) => {
     const id = e.target.id;
@@ -37,6 +39,8 @@ function NewTaskField({ addTask, setNewTaskPageToggle }) {
     el.style.height = `${el.scrollHeight}px`;
   };
 
+  // ✅✅✅
+  // ✅✅✅
   //this function handle  all keyboard keys action like Enter,Arrows,Backspace etc
   const handleKeyDown = (e) => {
     // console.log(id);
@@ -51,14 +55,17 @@ function NewTaskField({ addTask, setNewTaskPageToggle }) {
     const keydownedTextareaValue = e.target.value;
     const cursorPositionStart = keydownedTextarea.selectionStart;
     const cursorPositionEnd = keydownedTextarea.selectionEnd;
-    console.log("cursorPositionStart", cursorPositionStart);
-    console.log("cursorPositionEnd", cursorPositionEnd);
-    console.log("keydownedTextareaValue length", keydownedTextareaValue.length);
+    // console.log("cursorPositionStart", cursorPositionStart);
+    // console.log("cursorPositionEnd", cursorPositionEnd);
+    // console.log("keydownedTextareaValue length", keydownedTextareaValue.length);
 
     const zeroToPositionEnd = keydownedTextareaValue.slice(
       0,
       cursorPositionEnd,
     );
+
+    // ✅✅✅
+    // ✅✅✅
 
     if (e.key === "Enter" && e.target.name === "title") {
       e.preventDefault();
@@ -124,33 +131,6 @@ function NewTaskField({ addTask, setNewTaskPageToggle }) {
         };
       });
 
-      // keydownedId Textarea value setting
-      // setNewTask((prev) => ({
-      //   ...prev,
-      //   textarea: prev.textarea.map((t) =>
-      //     t.id === keydownedId
-      //       ? { ...t, value: slicedKeydownedTextareaCursorInfrontValue }
-      //       : t,
-      //   ),
-      // }));
-
-      // // new Textarea id and value set on newtask textarea array
-      // setNewTask((prev) => {
-      //   const newTextarea = {
-      //     id: id,
-      //     value: slicedKeydownedTextareaCursorBehindValue,
-      //   };
-
-      //   const updated = [...prev.textarea];
-
-      //   updated.splice(keydownedTextAreaIndex + 1, 0, newTextarea);
-
-      //   return {
-      //     ...prev,
-      //     textarea: updated,
-      //   };
-      // });
-
       setTaskField((prev) => [...prev, { id: id }]);
 
       setFocusId(id);
@@ -204,7 +184,6 @@ function NewTaskField({ addTask, setNewTaskPageToggle }) {
 
         const previousTextareaId = previousTextarea.id;
         const previousTextareaValue = previousTextarea.value;
-        console.log(previousTextareaValue.length);
         const currentTextareaValue = e.target.value + " ";
         const mergedValue = previousTextareaValue.concat(currentTextareaValue);
 
@@ -277,6 +256,8 @@ function NewTaskField({ addTask, setNewTaskPageToggle }) {
     }
   };
 
+  // ✅✅✅
+  // ✅✅✅
   //Task title ,cetagories ,status , priority etc. properties value catching function
   const handleChange = (e) => {
     const key = e.target.name;
@@ -287,6 +268,8 @@ function NewTaskField({ addTask, setNewTaskPageToggle }) {
     });
   };
 
+  // ✅✅✅
+  // ✅✅✅
   //dynamically create all text area Value Catching Function
   const handleTextarea = (e) => {
     const id = e.target.id;
@@ -299,22 +282,299 @@ function NewTaskField({ addTask, setNewTaskPageToggle }) {
     }));
   };
 
-  //new task submit function
+  // ✅✅✅
+  // ✅✅✅
+
+  // ✅ Normalize newline format (Windows \r\n, Old Mac \r → Unix \n)
+  function normalizeText(text) {
+    if (typeof text !== "string") return ""; // 🔎 safety: invalid input হলে empty string
+
+    return text
+      .replace(/\r\n/g, "\n") // 🧩 Windows newline → \n
+      .replace(/\r/g, "\n"); // 🧩 Old Mac newline → \n
+  }
+
+  // ✅ Collapse multiple empty lines & prepare blocks
+  function multiLineCollapse(text) {
+    if (typeof text !== "string") {
+      return { firstLine: "", newTextarea: [] }; // 🔎 safety fallback
+    }
+
+    const lines = text
+      .split("\n") // 🧩 text কে line array বানানো
+      .map((line) => line.trim()) // 🧩 প্রতিটা line clean করা
+      .filter((line, index, arr) => {
+        // 🧩 consecutive empty line collapse করা
+        if (line !== "") return true;
+        return arr[index - 1] !== "";
+      });
+
+    // const lines = text
+    //   .split("\n") // 🧩 text কে line array বানানো
+    //   .map((line) => line.trim()) // 🧩 প্রতিটা line clean করা
+    //   .filter((line, index, arr) => {
+    //     if (line !== "") return true;
+
+    //     // প্রথম লাইনে empty হলে বাদ
+    //     if (index === 0) return false;
+
+    //     // আগের লাইন empty হলে বাদ
+    //     return arr[index - 1] !== "";
+    //   });
+    // while (lines.length && lines[lines.length - 1] === "") {
+    //   lines.pop();
+    // }
+
+    // const lines = text.filter((line, index, arr) => {
+    //   if (line !== "") return true;
+
+    //   // প্রথম লাইনে empty হলে বাদ
+    //   if (index === 0) return false;
+
+    //   // আগের লাইন empty হলে বাদ
+    //   return arr[index - 1] !== "";
+    // });
+
+    if (lines.length === 0) {
+      return { firstLine: "", newTextarea: [] }; // 🔎 safety: empty paste
+    }
+
+    const newTextarea = [];
+
+    for (let i = 1; i < lines.length; i++) {
+      newTextarea.push({
+        id: crypto.randomUUID(), // 🧩 প্রতিটা নতুন block এর জন্য unique id
+        value: lines[i],
+      });
+    }
+
+    return { firstLine: lines[0], newTextarea };
+  }
+
+  // ✅ safer index finder (=== ব্যবহার করা হয়েছে)
+  function textAreaIndex(id) {
+    if (!id) return -1; // 🔎 safety: invalid id
+    return newTask.textarea.findIndex((item) => item.id === id);
+  }
+
+  // ✅ Paste handling function (title & textarea দুই ক্ষেত্রেই কাজ করবে)
+  const handleTitlePast = (e) => {
+    if (!e || !e.target) return; // 🔎 safety: invalid event
+
+    e.preventDefault(); // 🧩 default browser paste বন্ধ
+
+    const cursorPositionStart = e.target.selectionStart ?? 0; // 🔎 safety default
+    const cursorPositionEnd = e.target.selectionEnd ?? 0;
+
+    const pastedText = e.clipboardData?.getData("text") ?? ""; // 🔎 safety clipboard
+    const normalizedText = normalizeText(pastedText);
+    const newTextarea = multiLineCollapse(normalizedText);
+
+    // =========================
+    // TITLE FIELD
+    // =========================
+    if (e.target.name === "title") {
+      if (!newTextarea.firstLine) return; // 🔎 empty paste হলে কিছু করবে না
+
+      if (e.target.value === "") {
+        setNewTask((prev) => ({
+          ...prev,
+          title: newTextarea.firstLine, // 🧩 খালি title এ সরাসরি first line বসানো
+        }));
+      } else if (cursorPositionEnd !== cursorPositionStart) {
+        setNewTask((prev) => ({
+          ...prev,
+          title:
+            prev.title.slice(0, cursorPositionStart) + // 🧩 selection আগের অংশ
+            newTextarea.firstLine + // 🧩 replace অংশ
+            prev.title.slice(cursorPositionEnd), // 🧩 selection পরের অংশ
+        }));
+
+        requestAnimationFrame(() => {
+          const el = e.target;
+          if (!el) return;
+          el.focus(); // 🧩 focus ফিরিয়ে আনা
+          el.setSelectionRange(
+            cursorPositionStart + newTextarea.firstLine.length,
+            cursorPositionStart + newTextarea.firstLine.length,
+          ); // 🧩 cursor নতুন text এর শেষে নেওয়া
+        });
+      } else {
+        const beforeCursorValue = e.target.value.slice(0, cursorPositionStart);
+        const afterCursorValue = e.target.value.slice(cursorPositionStart);
+
+        setNewTask((prev) => ({
+          ...prev,
+          title:
+            beforeCursorValue + // 🧩 cursor আগের অংশ
+            newTextarea.firstLine +
+            afterCursorValue, // 🧩 cursor পরের অংশ
+        }));
+
+        requestAnimationFrame(() => {
+          const el = e.target;
+          if (!el) return;
+          el.focus();
+          el.setSelectionRange(
+            cursorPositionStart + newTextarea.firstLine.length,
+            cursorPositionStart + newTextarea.firstLine.length,
+          ); // 🧩 insert এর পরে cursor reposition
+        });
+      }
+    }
+
+    // =========================
+    // TEXTAREA (NO SELECTION)
+    // =========================
+    else if (
+      e.target.value !== "" &&
+      e.target.name !== "title" &&
+      cursorPositionStart === cursorPositionEnd
+    ) {
+      const pastedTextAreaValue = e.target.value;
+      const beforeCursorValue = pastedTextAreaValue.slice(
+        0,
+        cursorPositionStart,
+      );
+      const afterCursorValue = pastedTextAreaValue.slice(cursorPositionStart);
+
+      const lastTextArea = {
+        id: crypto.randomUUID(),
+        value: afterCursorValue, // 🧩 split এর পরে tail অংশ নতুন block
+      };
+
+      const pasedTextAreaIndex = textAreaIndex(e.target.id);
+      if (pasedTextAreaIndex === -1) return; // 🔎 safety
+
+      setNewTask((prev) => {
+        let updated = [...prev.textarea]; // 🧩 array clone
+
+        updated = updated.map((item) => {
+          if (item.id === e.target.id) {
+            return {
+              ...item, // 🧩 object clone (immutability fix)
+              value: beforeCursorValue + newTextarea.firstLine,
+            };
+          }
+          return item;
+        });
+
+        updated.splice(pasedTextAreaIndex + 1, 0, lastTextArea);
+        updated.splice(pasedTextAreaIndex + 1, 0, ...newTextarea.newTextarea);
+
+        return { ...prev, textarea: updated };
+      });
+    }
+
+    // =========================
+    // TEXTAREA (WITH SELECTION)
+    // =========================
+    else if (
+      e.target.value !== "" &&
+      e.target.name !== "title" &&
+      cursorPositionStart !== cursorPositionEnd
+    ) {
+      const pastedTextAreaValue = e.target.value;
+      const beforeCursorValue = pastedTextAreaValue.slice(
+        0,
+        cursorPositionStart,
+      );
+      const afterCursorValue = pastedTextAreaValue.slice(cursorPositionEnd);
+
+      const pasedTextAreaIndex = textAreaIndex(e.target.id);
+      if (pasedTextAreaIndex === -1) return; // 🔎 safety
+
+      if (normalizedText.split("\n").length <= 1) {
+        setNewTask((prev) => {
+          let updated = prev.textarea.map((item) => {
+            if (item.id === e.target.id) {
+              return {
+                ...item, // 🧩 object clone
+                value: beforeCursorValue + normalizedText + afterCursorValue, // 🧩 selection replace
+              };
+            }
+            return item;
+          });
+
+          return { ...prev, textarea: updated };
+        });
+      } else {
+        const lastTextArea = {
+          id: crypto.randomUUID(),
+          value: afterCursorValue,
+        };
+
+        setNewTask((prev) => {
+          let updated = prev.textarea.map((item) => {
+            if (item.id === e.target.id) {
+              return {
+                ...item, // 🧩 immutability fix
+                value: beforeCursorValue + newTextarea.firstLine,
+              };
+            }
+            return item;
+          });
+
+          updated.splice(pasedTextAreaIndex + 1, 0, lastTextArea);
+          updated.splice(pasedTextAreaIndex + 1, 0, ...newTextarea.newTextarea);
+
+          return { ...prev, textarea: updated };
+        });
+      }
+    }
+
+    // =========================
+    // EMPTY TEXTAREA CASE
+    // =========================
+    else {
+      const pasedTextAreaIndex = textAreaIndex(e.target.id);
+      if (pasedTextAreaIndex === -1) return; // 🔎 safety
+
+      setNewTask((prev) => {
+        let updated = prev.textarea.map((item) => {
+          if (item.id === e.target.id) {
+            return {
+              ...item, // 🧩 immutability fix
+              value: newTextarea.firstLine,
+            };
+          }
+          return item;
+        });
+
+        updated.splice(pasedTextAreaIndex + 1, 0, ...newTextarea.newTextarea);
+
+        return { ...prev, textarea: updated };
+      });
+    }
+  };
+
+  // ✅✅✅
+  // ✅✅✅
+
+  // new task submit function
   const handleSubmit = (e) => {
     e.preventDefault();
     addTask(newTask);
     setNewTaskPageToggle((previus) => !previus);
   };
 
+  // ✅✅✅
+  // ✅✅✅
+
   useEffect(() => {
     newTaskTitleRefs.current.focus();
   }, [taskField]);
 
+  // ✅✅✅
+  // ✅✅✅
   useEffect(() => {
     if (focusId && textareaRefs.current[focusId]) {
       textareaRefs.current[focusId].focus();
     }
   }, [taskField, focusId]);
+
+  // ✅✅✅
+  // ✅✅✅
 
   useEffect(() => {
     let id = newTextareaIdRef.current;
@@ -328,6 +588,9 @@ function NewTaskField({ addTask, setNewTaskPageToggle }) {
     el.style.height = `${el.scrollHeight}px`;
   }, [newTask.textarea]);
 
+  // ✅✅✅
+  // ✅✅✅
+
   useEffect(() => {
     let id = keydownedTextareaIdRef.current;
     if (!id) return;
@@ -339,6 +602,8 @@ function NewTaskField({ addTask, setNewTaskPageToggle }) {
     el.style.height = `${el.scrollHeight}px`;
   }, [newTask.textarea]);
 
+  // ✅✅✅
+  // ✅✅✅
   return (
     <form
       name="newTaskForm"
@@ -353,6 +618,7 @@ function NewTaskField({ addTask, setNewTaskPageToggle }) {
         onChange={handleChange}
         onKeyDown={handleKeyDown}
         rows={1}
+        onPaste={handleTitlePast}
         type="text"
         onInput={handleInput}
         required
@@ -376,6 +642,7 @@ function NewTaskField({ addTask, setNewTaskPageToggle }) {
           handleTextarea={handleTextarea}
           handleKeyDown={handleKeyDown}
           // onInput={handleInput}
+          handleTitlePast={handleTitlePast}
           value={field.value}
           key={field.id}
           id={field.id}

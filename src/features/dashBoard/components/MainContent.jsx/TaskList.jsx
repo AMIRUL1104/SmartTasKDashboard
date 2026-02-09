@@ -4,7 +4,12 @@ import { fas } from "@fortawesome/free-solid-svg-icons";
 library.add(fas);
 import { useState } from "react";
 
-function TaskList({ allTask, handleTaskShowing, openDeleteDrawer }) {
+function TaskList({
+  allTask,
+  handleTaskShowing,
+  openDeleteDrawer,
+  handleEdit,
+}) {
   const [EditDeleteVisible, setEditDeleteVisible] = useState(null);
 
   const handleEditDeleteVisible = (e) => {
@@ -66,6 +71,8 @@ function TaskList({ allTask, handleTaskShowing, openDeleteDrawer }) {
                 </button>
                 <button
                   type="button"
+                  id={task.id}
+                  onClick={handleEdit}
                   className=" font-sm  px-2.5 min-w-16 hover:font-semibold hover:text-cyan-950"
                 >
                   Edit

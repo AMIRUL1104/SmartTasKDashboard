@@ -1,7 +1,7 @@
 import DetailsTask from "./TaskdetailsJSX/DetailsTask";
 import { useState } from "react";
 
-function TaskDetails({ currentTaskDetails, dispatch, allTask }) {
+function TaskDetails({ currentTaskDetails, dispatch, allTask, handleEdit }) {
   const [status, setStatus] = useState(false);
   const handleStatusDropdown = () => {
     setStatus((p) => !p);
@@ -35,7 +35,12 @@ function TaskDetails({ currentTaskDetails, dispatch, allTask }) {
             Status : {activeTask.status}
           </button>
 
-          <button className=" ml-4 rounded-lg bg-transparent border-slate-700 border-2 px-4 py-1.5 text-sm font-medium text-slate-700 hover:bg-slate-700 hover:text-white">
+          <button
+            type="button"
+            id={activeTask.id}
+            onClick={handleEdit}
+            className=" ml-4 rounded-lg bg-transparent border-slate-700 border-2 px-4 py-1.5 text-sm font-medium text-slate-700 hover:bg-slate-700 hover:text-white"
+          >
             Edit
           </button>
 

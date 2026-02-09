@@ -14,7 +14,8 @@ const TaskFieldPieces = forwardRef(
     const [isPlaceholder, setPlaceHolder] = useState(false);
     const [isNeedBg, setBg] = useState(false);
 
-    const handleClick = () => {
+    const handleClick = (e) => {
+      e.preventDefault();
       setBg(true);
       // console.log(e.target.id);
     };

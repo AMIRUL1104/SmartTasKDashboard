@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import TaskFieldPieces from "./reusable_component/TaskFIeldPieces.JSX";
-function NewTaskField({ addTask, setNewTaskPageToggle }) {
+import SaveTaskButton from "./reusable_component/RemovePage";
+function NewTaskField({ addTask, setMainSectionToggle, currentEditTask }) {
   //all useState Hooks
   const [taskField, setTaskField] = useState([{ id: "2" }]); //using for rendering TaskFiedPieces OR dynamic textarea and all id is using on textarea id
   const [focusId, setFocusId] = useState(null); // for textarea  focus control
@@ -555,12 +556,26 @@ function NewTaskField({ addTask, setNewTaskPageToggle }) {
   const handleSubmit = (e) => {
     e.preventDefault();
     addTask(newTask);
-    setNewTaskPageToggle((previus) => !previus);
+    setMainSectionToggle((previus) => !previus);
   };
 
   // ✅✅✅
   // ✅✅✅
 
+  useEffect(() => {
+    if (!currentEditTask) return;
+
+    setNewTask({
+      title: currentEditTask.taskTitle,
+      textarea: currentEditTask.textarea.map((item) => ({ ...item })),
+      category: currentEditTask.category,
+      status: currentEditTask.status,
+      priority: currentEditTask.priority,
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentEditTask?.id]);
+
+  // ✅✅✅ this useeffect is for start task editing
   useEffect(() => {
     newTaskTitleRefs.current.focus();
   }, [taskField]);
@@ -622,7 +637,7 @@ function NewTaskField({ addTask, setNewTaskPageToggle }) {
         type="text"
         onInput={handleInput}
         required
-        onInvalid={(e) => e.target.setCustomValidity("Fill Out Task Title")}
+        // onInvalid={(e) => e.target.setCustomValidity("Fill Out Task Title")}
         placeholder="New Page"
         className="
           w-full
@@ -659,6 +674,7 @@ function NewTaskField({ addTask, setNewTaskPageToggle }) {
         >
           Save
         </button>
+        {/* <SaveTaskButton handleSubmit={handleSubmit} /> */}
 
         <select
           name="category"

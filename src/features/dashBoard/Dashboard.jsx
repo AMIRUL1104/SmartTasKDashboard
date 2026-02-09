@@ -155,6 +155,7 @@ function Dashboard() {
   });
   const [mainSectionToggle, setMainSectionToggle] = useState("mainbox");
   const [currentTaskDetails, setCurrentTaskDetails] = useState(null);
+  const [currentEditTask, setCurrentEditTask] = useState(null);
 
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null); //for delete
@@ -169,7 +170,21 @@ function Dashboard() {
   // add new task function
   const addTask = ({ title, category, status, priority, textarea }) => {
     let taskTitle = title.trim().length > 0 ? title : "untitled document";
-    // console.log(taskTitle);
+
+    if (currentEditTask) {
+      let updatedTask = {
+        ...currentEditTask,
+        taskTitle,
+        category,
+        status,
+        priority,
+        textarea,
+      };
+      dispatch({ type: "SET_DELETETASK", payload: currentEditTask.id });
+      dispatch({ type: "SET_NEWTASK", payload: updatedTask });
+      setCurrentEditTask(null);
+      return;
+    }
 
     let addNewTask = {
       id: crypto.randomUUID(),
@@ -181,16 +196,7 @@ function Dashboard() {
     };
 
     dispatch({ type: "SET_NEWTASK", payload: addNewTask });
-    // return headState.map((item) => {
-    //   return {
-    //     ...item,
-    //     allTask: [...headState.allTask, addNewTask],
-    //   };
-    // });
-    // setVisibleTasks([...visibleTasks, addNewTask]);
-    // setAllTask([...allTask, addNewTask]);
   };
-  // console.log(headState.allTask);
 
   // delete drawer functions
   const openDeleteDrawer = (e) => {
@@ -217,13 +223,24 @@ function Dashboard() {
     setMainSectionToggle("taskDetails");
   };
 
+  // handle edit button in task details page
+  const handleEdit = (e) => {
+    const id = e.target.id;
+    const editItem = headState.allTask.find((e) => {
+      return e.id === id;
+    });
+    setCurrentEditTask(editItem);
+    setMainSectionToggle("newTaskPage");
+  };
+
   // conditional rendering of main section
   let content;
   if (mainSectionToggle === "newTaskPage") {
     content = (
       <NewTaskField
         addTask={addTask}
-        setNewTaskPageToggle={setMainSectionToggle}
+        setMainSectionToggle={setMainSectionToggle}
+        currentEditTask={currentEditTask}
       />
     );
   } else if (mainSectionToggle === "taskDetails") {
@@ -232,16 +249,18 @@ function Dashboard() {
         allTask={headState.allTask}
         dispatch={dispatch}
         currentTaskDetails={currentTaskDetails}
+        handleEdit={handleEdit} // for edit button in task details page
       />
     );
   } else {
     content = (
       <MainBox
-        allTask={headState.visibleTasks}
+        allTask={headState.visibleTasks} // for showing tasks in main box according to filters and search query
         // allTask={allTasks}
-        handleTaskShowing={handleTaskShowing}
-        dispatch={dispatch}
-        openDeleteDrawer={openDeleteDrawer}
+        handleTaskShowing={handleTaskShowing} // for showing task details when click on task title in main box
+        dispatch={dispatch} // for filters in task list page
+        openDeleteDrawer={openDeleteDrawer} // for delete button in task details page
+        handleEdit={handleEdit} // for edit button in TaskList page
       />
     );
   }

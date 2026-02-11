@@ -4,8 +4,6 @@ import MainBox from "./components/MainBox";
 import NewTaskField from "./components/NewTaskField";
 import TaskDetails from "./components/TaskDetails";
 import { useState, useReducer, useEffect } from "react";
-// import useLocaleStorage from "./components/hooks/useLocaleStorage";
-// import useLocaleStorage from "./components/hooks/useLocaleStorage";
 
 const initialValue = {
   allTask: JSON.parse(localStorage.getItem("userTasks")) || [],

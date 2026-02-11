@@ -1,13 +1,12 @@
-import ReactIcon from "../../../../assets/reactIcon.png";
-
+import webIcon from "../../../../assets/notio-high-resolution-logo-grayscale.png";
 function WebIcon() {
   return (
-    <div>
+    <div className="w-8 p-1 rounded-full bg-white overflow-hidden flex items-center justify-center ">
       <img
-        src={ReactIcon}
+        src={webIcon}
         alt="webicon"
-        srcSet={ReactIcon}
-        className="w-6 bg-transparent rounded-full max-xs:w-5 "
+        srcSet={webIcon}
+        className="w-12/12  object-cover object-center"
       />
     </div>
   );

@@ -556,7 +556,7 @@ function NewTaskField({ addTask, setMainSectionToggle, currentEditTask }) {
   const handleSubmit = (e) => {
     e.preventDefault();
     addTask(newTask);
-    setMainSectionToggle((previus) => !previus);
+    setMainSectionToggle("mainbox");
   };
 
   // ✅✅✅
@@ -618,7 +618,6 @@ function NewTaskField({ addTask, setMainSectionToggle, currentEditTask }) {
   }, [newTask.textarea]);
 
   // ✅✅✅
-  // ✅✅✅
   return (
     <form
       name="newTaskForm"
@@ -667,6 +666,7 @@ function NewTaskField({ addTask, setMainSectionToggle, currentEditTask }) {
           }}
         />
       ))}
+
       <div className=" border-t-4 border-gray-600 pt-1.5 mt-2.5 absolute bottom-2 flex items-baseline justify-evenly w-11/12 ">
         <button
           type="submit"

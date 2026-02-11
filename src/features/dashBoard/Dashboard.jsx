@@ -14,7 +14,7 @@ const initialValue = {
     category: "all",
     status: "all",
     priority: "all",
-    sort: "all",
+    sort: "",
     search: "",
   },
 };
@@ -72,17 +72,35 @@ function reducer(state, action) {
     }
     case "SET_SORT": {
       const filteredSort = action.payload;
+
+      let sortedTasks = [...state.visibleTasks];
+      console.log(sortedTasks);
+
+      if (filteredSort === "new-old") {
+        sortedTasks.sort((a, b) => new Date(b.date) - new Date(a.date));
+      } else if (filteredSort === "old-new") {
+        sortedTasks.sort((a, b) => new Date(a.date) - new Date(b.date));
+      } else if (filteredSort === "priority") {
+        const priorityOrder = { high: 1, medium: 2, low: 3 };
+        sortedTasks.sort(
+          (a, b) => priorityOrder[a.priority] - priorityOrder[b.priority],
+        );
+      } else if (filteredSort === "status") {
+        const statusOrder = { pending: 1, "in-progress": 2, completed: 3 };
+        sortedTasks.sort(
+          (a, b) => statusOrder[a.status] - statusOrder[b.status],
+        );
+      } else {
+        sortedTasks = state.visibleTasks;
+      }
+
       return {
         ...state,
         filters: {
           ...state.filters,
           filteredSort,
         },
-
-        visibleTasks:
-          filteredSort === "all"
-            ? state.allTask
-            : state.allTask.filter((item) => item.category === filteredSort),
+        visibleTasks: sortedTasks,
       };
     }
     case "SET_SEARCH": {
@@ -162,6 +180,7 @@ function Dashboard() {
 
   // state management using useReducer
   const [headState, dispatch] = useReducer(reducer, initialValue);
+  // console.log(headState);
 
   useEffect(() => {
     localStorage.setItem("userTasks", JSON.stringify(headState.allTask));
@@ -170,7 +189,7 @@ function Dashboard() {
   // add new task function
   const addTask = ({ title, category, status, priority, textarea }) => {
     let taskTitle = title.trim().length > 0 ? title : "untitled document";
-
+    // const taskDate = new Date(year, month, day, hours, minutes, seconds);
     if (currentEditTask) {
       let updatedTask = {
         ...currentEditTask,
@@ -179,6 +198,7 @@ function Dashboard() {
         status,
         priority,
         textarea,
+        date: new Date().toISOString(),
       };
       dispatch({ type: "SET_DELETETASK", payload: currentEditTask.id });
       dispatch({ type: "SET_NEWTASK", payload: updatedTask });
@@ -193,6 +213,7 @@ function Dashboard() {
       status,
       priority,
       textarea,
+      date: new Date().toISOString(),
     };
 
     dispatch({ type: "SET_NEWTASK", payload: addNewTask });

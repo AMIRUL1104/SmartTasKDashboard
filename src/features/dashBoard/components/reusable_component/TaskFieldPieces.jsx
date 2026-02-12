@@ -12,12 +12,11 @@ const TaskFieldPieces = forwardRef(
   ) => {
     const [textEditBtn, setTextEditBtn] = useState(false);
     const [isPlaceholder, setPlaceHolder] = useState(false);
-    const [isNeedBg, setBg] = useState(false);
+    // const [isNeedBg, setBg] = useState(false);
 
     const handleClick = (e) => {
       e.preventDefault();
-      setBg(true);
-      // console.log(e.target.id);
+      // setBg(true);
     };
 
     useEffect(() => {
@@ -33,12 +32,12 @@ const TaskFieldPieces = forwardRef(
         onMouseOut={() => setTextEditBtn((prev) => !prev)}
         onFocus={() => setPlaceHolder(true)}
         onBlur={() => setPlaceHolder((pre) => !pre)}
-        className=" flex items-center gap-0 my-2 w-full "
+        className=" flex items-center gap-0 w-full "
       >
         <button
           type="submit"
           onClick={handleClick}
-          onBlur={() => setBg((pre) => !pre)}
+          // onBlur={() => setBg((pre) => !pre)}
           className={` px-0 rounded-full  hover:border-2 mr-2 ${
             textEditBtn ? "block" : "hidden"
           }`}
@@ -60,15 +59,13 @@ const TaskFieldPieces = forwardRef(
           onPaste={handleTitlePast}
           value={value}
           className={` focus:bg-sky-100 w-full 
-          text-xl
+          text-base
           leading-relaxed
           font-normal
           outline-none
           resize-none
           overflow-hidden
-           p-2 pl-0 rounded-lg ${textEditBtn ? " ml-0" : "ml-7"} ${
-             isNeedBg ? " bg-sky-300" : "bg-transparent"
-           } `}
+           py-[3px] pl-0 px-0.5 rounded-lg ${textEditBtn ? " ml-0" : "ml-7"}  `}
         />
       </div>
     );

@@ -1,7 +1,14 @@
 import { useState, useRef, useEffect } from "react";
 import TaskFieldPieces from "./reusable_component/TaskFIeldPieces.JSX";
-import SaveTaskButton from "./reusable_component/RemovePage";
-function NewTaskField({ addTask, setMainSectionToggle, currentEditTask }) {
+import MenuBar from "./reusable_component/MenuBar";
+
+function NewTaskField({
+  addTask,
+  setMainSectionToggle,
+  currentEditTask,
+  SidebarToggle,
+  setSidebarToggle,
+}) {
   //all useState Hooks
   const [taskField, setTaskField] = useState([{ id: "2" }]); //using for rendering TaskFiedPieces OR dynamic textarea and all id is using on textarea id
   const [focusId, setFocusId] = useState(null); // for textarea  focus control
@@ -310,32 +317,6 @@ function NewTaskField({ addTask, setMainSectionToggle, currentEditTask }) {
         return arr[index - 1] !== "";
       });
 
-    // const lines = text
-    //   .split("\n") // 🧩 text কে line array বানানো
-    //   .map((line) => line.trim()) // 🧩 প্রতিটা line clean করা
-    //   .filter((line, index, arr) => {
-    //     if (line !== "") return true;
-
-    //     // প্রথম লাইনে empty হলে বাদ
-    //     if (index === 0) return false;
-
-    //     // আগের লাইন empty হলে বাদ
-    //     return arr[index - 1] !== "";
-    //   });
-    // while (lines.length && lines[lines.length - 1] === "") {
-    //   lines.pop();
-    // }
-
-    // const lines = text.filter((line, index, arr) => {
-    //   if (line !== "") return true;
-
-    //   // প্রথম লাইনে empty হলে বাদ
-    //   if (index === 0) return false;
-
-    //   // আগের লাইন empty হলে বাদ
-    //   return arr[index - 1] !== "";
-    // });
-
     if (lines.length === 0) {
       return { firstLine: "", newTextarea: [] }; // 🔎 safety: empty paste
     }
@@ -622,103 +603,166 @@ function NewTaskField({ addTask, setMainSectionToggle, currentEditTask }) {
     <form
       name="newTaskForm"
       onSubmit={handleSubmit}
-      className=" relative mx-8 my-5 text-base bg-gray-100 text-gray-950 p-10 rounded-2xl min-h-3/4 "
+      className={` relative mt-2.5 flex items-center justify-start flex-col  text-base bg-gray-100 text-gray-950 py-10  h-full overflow-auto ${SidebarToggle ? "px-10 max-sm:px-2.5" : "  px-2.5  md:px-28 lg:px-48"} max-md:absolute max-md:top-0 max-md:left-0 max-md:right-0`}
+      // className="relative bg-white rounded-xl px-16 py-12 shadow-sm border border-gray-200" SidebarToggle
     >
-      <textarea
-        id={"1"}
-        ref={newTaskTitleRefs}
-        name="title"
-        value={newTask.title}
-        onChange={handleChange}
-        onKeyDown={handleKeyDown}
-        rows={1}
-        onPaste={handleTitlePast}
-        type="text"
-        onInput={handleInput}
-        required
-        // onInvalid={(e) => e.target.setCustomValidity("Fill Out Task Title")}
-        placeholder="New Page"
-        className="
-          w-full
-          text-4xl
-          leading-relaxed
-          bg-gray-100
-          rounded-xl
-          font-bold
-          outline-none
-          resize-none
-          overflow-hidden      
-        "
-      />
+      <div
+        className={` absolute top-0 border-b-2 space-y-2.5  py-1.5  border-gray-600  flex items-center justify-between max-sm:flex-col   ${SidebarToggle ? " w-10/12 max-md:w-full" : "max-md:w-full w-9/12"} max-md:px-8 `}
+      >
+        <div className="flex items-center justify-start max-sm:justify-between max-sm:space-x-40 gap-10 ">
+          <span
+            className={` ${SidebarToggle ? " hidden" : "flex"} items-center -ml-6 `}
+          >
+            <MenuBar setSidebarToggle={setSidebarToggle} />
+          </span>
 
-      {newTask.textarea.map((field) => (
-        <TaskFieldPieces
-          handleTextarea={handleTextarea}
-          handleKeyDown={handleKeyDown}
-          // onInput={handleInput}
-          handleTitlePast={handleTitlePast}
-          value={field.value}
-          key={field.id}
-          id={field.id}
-          handleInput={handleInput}
-          ref={(el) => {
-            if (el) textareaRefs.current[field.id] = el;
-          }}
-        />
-      ))}
+          <button
+            type="submit"
+            className=" border  hover:shadow hover:shadow-amber-50 hover:text-cyan-700 bg-gray-300 py-0.5 rounded-lg   px-3.5  capitalize font-semibold text-cyan-900"
+          >
+            Save
+          </button>
+        </div>
 
-      <div className=" border-t-4 border-gray-600 pt-1.5 mt-2.5 absolute bottom-2 flex items-baseline justify-evenly w-11/12 ">
-        <button
-          type="submit"
-          className="  hover:shadow hover:shadow-amber-50 hover:text-cyan-700 bg-gray-300 p-1.5 rounded-lg   px-3.5  capitalize font-bold text-cyan-900"
-        >
-          Save
-        </button>
-        {/* <SaveTaskButton handleSubmit={handleSubmit} /> */}
+        {/* <div className=" space-x-3 ">
+          <select
+            name="category"
+            value={newTask.category}
+            onChange={handleChange}
+            required
+            className="rounded-lg bg-slate-700 px-2.5 py-1 text-sm font-normal text-white hover:bg-slate-600"
+          >
+            <option value="all" className=" mt-2.5">
+              Categories
+            </option>
+            <option value="work">Work</option>
+            <option value="personal">Personal</option>
+            <option value="shopping">Shopping</option>
+            <option value="others">Others</option>
+          </select>
 
-        <select
-          name="category"
-          value={newTask.category}
+          <select
+            name="status"
+            value={newTask.status}
+            onChange={handleChange}
+            className="rounded-lg bg-slate-700 px-2.5 py-1 text-sm font-normal text-white hover:bg-slate-600"
+          >
+            <option value="all" className=" mt-2.5">
+              Status
+            </option>
+            <option value="completed">Completed</option>
+            <option value="pending">Pending</option>
+            <option value="in-progress">In Progress</option>
+          </select>
+
+          <select
+            name="priority"
+            value={newTask.priority}
+            onChange={handleChange}
+            className="rounded-lg bg-slate-700 px-2.5 py-1 text-sm  font-normal text-white hover:bg-slate-600 "
+          >
+            <option value="all" className=" mt-2.5">
+              Status
+            </option>
+            <option value={"high"}>High</option>
+            <option value={"medium"}>Medium</option>
+            <option value={"low"}>Low</option>
+          </select>
+        </div> */}
+        <div className=" space-x-3">
+          <select
+            name="category"
+            value={newTask.category}
+            onChange={handleChange}
+            required
+            className="rounded-sm bg-slate-700 px-0 py-0.5 text-sm font-normal text-white hover:bg-slate-600"
+          >
+            <option value="all" className=" mt-2.5">
+              Categories
+            </option>
+            <option value="work">Work</option>
+            <option value="personal">Personal</option>
+            <option value="shopping">Shopping</option>
+            <option value="others">Others</option>
+          </select>
+
+          <select
+            name="status"
+            value={newTask.status}
+            onChange={handleChange}
+            className="rounded-sm bg-slate-700 px-0 py-0.5  text-sm font-normal text-white hover:bg-slate-600"
+          >
+            <option value="all" className=" mt-2.5">
+              Status
+            </option>
+            <option value="completed">Completed</option>
+            <option value="pending">Pending</option>
+            <option value="in-progress">In Progress</option>
+          </select>
+
+          <select
+            name="priority"
+            value={newTask.priority}
+            onChange={handleChange}
+            className="rounded-sm bg-slate-700 px-0 py-0.5 text-sm  font-normal text-white hover:bg-slate-600 "
+          >
+            <option value="all" className=" mt-2.5">
+              Status
+            </option>
+            <option value={"high"}>High</option>
+            <option value={"medium"}>Medium</option>
+            <option value={"low"}>Low</option>
+          </select>
+        </div>
+      </div>
+
+      <div className=" mt-5 max-sm:mt-10 w-full ">
+        <textarea
+          id={"1"}
+          ref={newTaskTitleRefs}
+          name="title"
+          value={newTask.title}
           onChange={handleChange}
+          onKeyDown={handleKeyDown}
+          rows={1}
+          onPaste={handleTitlePast}
+          type="text"
+          onInput={handleInput}
           required
-          className="rounded-lg bg-slate-700 px-4 py-2 text-sm font-medium text-white hover:bg-slate-600"
-        >
-          <option value="all" className=" mt-2.5">
-            Categories
-          </option>
-          <option value="work">Work</option>
-          <option value="personal">Personal</option>
-          <option value="shopping">Shopping</option>
-          <option value="others">Others</option>
-        </select>
+          placeholder="New Page"
+          className="
+            w-full
+            text-3xl
+            max-sm:text-2xl
+            leading-relaxed
+            rounded-xl
+            font-semibold
 
-        <select
-          name="status"
-          value={newTask.status}
-          onChange={handleChange}
-          className="rounded-lg bg-slate-700 px-4 py-2 text-sm font-medium text-white hover:bg-slate-600"
-        >
-          <option value="all" className=" mt-2.5">
-            Status
-          </option>
-          <option value="completed">Completed</option>
-          <option value="pending">Pending</option>
-          <option value="in-progress">In Progress</option>
-        </select>
+            outline-none
+            resize-none
+            overflow-hidden
+            mb-5
+            px-4
+            bg-gray-100
+             focus:bg-sky-100
+          "
+        />
 
-        <select
-          name="priority"
-          value={newTask.priority}
-          onChange={handleChange}
-          className="rounded-lg bg-slate-700 px-4 py-2 text-sm text-white outline-none ring-1 ring-slate-600 focus:ring-2 focus:ring-red-500"
-        >
-          <option value="all" className=" mt-2.5">
-            Status
-          </option>
-          <option value={"high"}>High</option>
-          <option value={"medium"}>Medium</option>
-          <option value={"low"}>Low</option>
-        </select>
+        {newTask.textarea.map((field) => (
+          <TaskFieldPieces
+            handleTextarea={handleTextarea}
+            handleKeyDown={handleKeyDown}
+            // onInput={handleInput}
+            handleTitlePast={handleTitlePast}
+            value={field.value}
+            key={field.id}
+            id={field.id}
+            handleInput={handleInput}
+            ref={(el) => {
+              if (el) textareaRefs.current[field.id] = el;
+            }}
+          />
+        ))}
       </div>
     </form>
   );

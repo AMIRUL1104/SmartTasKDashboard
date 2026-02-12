@@ -7,10 +7,16 @@ function MainBox({
   dispatch,
   openDeleteDrawer,
   handleEdit,
+  setSidebarToggle,
+  SidebarToggle,
 }) {
   return (
-    <div className=" h-full overflow-y-auto mb-0  max-md:mx-auto max-md:min-w-dvw max-md:px-2.5 mx-8 my-5 flex flex-col  gap-6">
-      <TaskFilters dispatch={dispatch} />
+    <div className="  overflow-y-auto h-[98vh] flex flex-col  gap-4 mx-8 mb-[2vh] max-md:absolute max-md:top-0 max-md:left-0 max-md:right-0 ">
+      <TaskFilters
+        dispatch={dispatch}
+        SidebarToggle={SidebarToggle}
+        setSidebarToggle={setSidebarToggle}
+      />
       <TaskList
         allTask={allTask}
         handleTaskShowing={handleTaskShowing}

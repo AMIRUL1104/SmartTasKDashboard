@@ -22,7 +22,7 @@ function TaskList({
 
   return (
     // <div>
-    <div className=" mt-4 grid grid-cols-[repeat(auto-fill,minmax(300px,1fr))] gap-4">
+    <div className=" hover:overflow-y-auto overflow-y-hidden mt-4 grid grid-cols-[repeat(auto-fill,minmax(300px,1fr))] gap-4">
       {allTask.length === 0 && (
         <p className=" text-center  w-full text-slate-800 text-3xl font-bold mt-8">
           No tasks found.
@@ -32,7 +32,6 @@ function TaskList({
         <div
           key={task.id}
           id={task.id}
-          // onClick={handleTaskShowing}
           className=" bg-cyan-900 h-45 overflow-clip p-2.5 shadow-md shadow-cyan-950 rounded-lg "
         >
           <div className=" flex justify-between items-center relative ">

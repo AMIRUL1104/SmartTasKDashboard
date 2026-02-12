@@ -178,7 +178,6 @@ function Dashboard() {
 
   // state management using useReducer
   const [headState, dispatch] = useReducer(reducer, initialValue);
-  // console.log(headState);
 
   useEffect(() => {
     localStorage.setItem("userTasks", JSON.stringify(headState.allTask));
@@ -260,6 +259,8 @@ function Dashboard() {
         addTask={addTask}
         setMainSectionToggle={setMainSectionToggle}
         currentEditTask={currentEditTask}
+        SidebarToggle={SidebarToggle}
+        setSidebarToggle={setSidebarToggle}
       />
     );
   } else if (mainSectionToggle === "taskDetails") {
@@ -269,6 +270,8 @@ function Dashboard() {
         dispatch={dispatch}
         currentTaskDetails={currentTaskDetails}
         handleEdit={handleEdit} // for edit button in task details page
+        SidebarToggle={SidebarToggle}
+        setSidebarToggle={setSidebarToggle}
       />
     );
   } else {
@@ -280,21 +283,16 @@ function Dashboard() {
         dispatch={dispatch} // for filters in task list page
         openDeleteDrawer={openDeleteDrawer} // for delete button in task details page
         handleEdit={handleEdit} // for edit button in TaskList page
+        SidebarToggle={SidebarToggle}
+        setSidebarToggle={setSidebarToggle}
       />
     );
   }
 
   return (
     <>
-      <Header
-        dispatch={dispatch}
-        setSidebarToggle={setSidebarToggle}
-        setMainSectionToggle={setMainSectionToggle}
-        mainSectionToggle={mainSectionToggle}
-      />
-
       <main
-        className={`max-md:relative  max-h-[90vh] overflow-auto ${
+        className={`max-md:relative   h-[99.99vh] overflow-clip bg-cyan-950 ${
           SidebarToggle ? "grid grid-cols-[250px_1fr]  " : " flex-1  "
         }`}
       >
@@ -303,9 +301,12 @@ function Dashboard() {
           SidebarToggle && (
             <Sidebar
               SidebarToggle={SidebarToggle}
+              setSidebarToggle={setSidebarToggle}
               allTask={headState.visibleTasks}
               handleTaskShowing={handleTaskShowing}
               dispatch={dispatch}
+              setMainSectionToggle={setMainSectionToggle}
+              mainSectionToggle={mainSectionToggle}
             />
           )
         }

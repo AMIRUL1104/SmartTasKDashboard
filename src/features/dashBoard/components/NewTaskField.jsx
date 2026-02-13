@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import MenuBar from "./reusable_component/MenuBar";
-import TaskFieldPieces from "./reusable_component/TaskBlock";
+import TaskFieldPieces from "./reusable_component/TaskFieldPieces";
 
 function NewTaskField({
   addTask,

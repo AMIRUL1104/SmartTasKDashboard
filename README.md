@@ -42,8 +42,8 @@ Smart Task Dashboard is a Notion-style task management web application that help
 - Drag & drop task management
 - Dark mode support
 
-## 📸 Screenshots
-(Add screenshots here)
+### 📸 Screenshots
+![Dashboard](./screenshots/notio_ui.jpg)
 
 ## 📌 Installation
 
